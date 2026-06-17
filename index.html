@@ -6,6 +6,10 @@
   <title>英语48音标 — 视频互动练习</title>
   <meta name="theme-color" content="#0f172a">
   <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="48音标">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <style>
     :root {
       --bg: #f6f7f2;
@@ -795,6 +799,11 @@
     // ── Init ──
     makeQuestion();
     renderAll();
+
+    // ── Service Worker ──
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
   </script>
 </body>
 </html>
