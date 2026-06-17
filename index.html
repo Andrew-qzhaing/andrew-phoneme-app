@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>英语48音标 — 视频互动练习</title>
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root {
+      --bg: #f6f7f2;
+      --ink: #202426;
+      --muted: #667071;
+      --line: #d8ded6;
+      --panel: #ffffff;
+      --accent: #0f766e;
+      --accent-2: #c2410c;
+      --accent-3: #4f46e5;
+      --good: #15803d;
+      --bad: #b91c1c;
+      --shadow: 0 14px 35px rgba(32,36,38,.10);
+      --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.5;
+    }
+    button, input { font: inherit; }
+
+    /* ── Layout ── */
+    .app { display: grid; grid-template-columns: 280px minmax(0,1fr); min-height: 100vh; }
+    aside {
+      position: sticky; top: 0; height: 100vh; padding: 24px 18px;
+      border-right: 1px solid var(--line); background: #fbfcf8; overflow: auto;
+    }
+    main { padding: 28px; min-width: 0; }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: 28px; line-height: 1.15; }
+    h2 { margin-bottom: 14px; font-size: 21px; }
+    h3 { margin-bottom: 8px; font-size: 16px; }
+    .sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+
+    /* ── Shared ── */
+    .tabs,.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .tab,.filter,.icon-btn,.primary,.ghost,.choice {
+      border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+      border-radius: var(--radius); cursor: pointer;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .tab,.filter,.primary,.ghost { min-height: 38px; padding: 8px 12px; }
+    .tab:hover,.filter:hover,.icon-btn:hover,.primary:hover,.ghost:hover,.choice:hover {
+      transform: translateY(-1px); border-color: #aeb9b1;
+    }
+    .tab.active,.filter.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .primary.danger { background: var(--bad); border-color: var(--bad); }
+    .ghost { background: transparent; }
+    .icon-btn { width: 38px; height: 38px; display: inline-grid; place-items: center; font-size: 18px; }
+
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0; }
+    .stat { padding: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+    .stat strong { display: block; font-size: 22px; }
+    .stat span { color: var(--muted); font-size: 12px; }
+
+    .progress-bar { height: 10px; overflow: hidden; border-radius: 999px; background: #e3e8e0; margin: 10px 0 4px; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-3)); transition: width .2s ease; }
+    .mini { color: var(--muted); font-size: 13px; }
+
+    /* ── Video ── */
+    .video-wrap {
+      position: relative; width: 100%; padding-top: 56.25%; background: #000;
+      border-radius: var(--radius); overflow: hidden; margin-bottom: 18px; box-shadow: var(--shadow);
+    }
+    .video-wrap iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+    }
+    .video-controls { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+    .timestamp-badge {
+      display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+      font-size: 13px; color: var(--muted);
+    }
+
+    /* ── Focus mode ── */
+    .focus-overlay {
+      position: fixed; inset: 0; z-index: 100; background: rgba(15,23,42,.92);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px; color: #fff; gap: 18px;
+    }
+    .focus-overlay.hidden { display: none; }
+    .focus-symbol { font-size: clamp(80px, 15vw, 140px); font-weight: 850; line-height: 1; letter-spacing: 2px; }
+    .focus-examples { font-size: 28px; color: #94a3b8; }
+    .focus-tip { max-width: 480px; text-align: center; font-size: 18px; color: #cbd5e1; line-height: 1.6; }
+    .focus-video-wrap { width: min(560px, 90vw); border-radius: var(--radius); overflow: hidden; }
+    .focus-video-wrap iframe { width: 100%; aspect-ratio: 16/9; border: 0; }
+    .focus-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .focus-actions button {
+      min-height: 44px; padding: 10px 20px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.1); color: #fff; cursor: pointer; font-size: 16px;
+    }
+    .focus-actions button:hover { background: rgba(255,255,255,.2); }
+    .focus-actions .focus-close { background: var(--accent); border-color: var(--accent); }
+
+    /* ── Cards ── */
+    .hero {
+      display: grid; grid-template-columns: minmax(0,1.3fr) minmax(280px,.7fr);
+      gap: 18px; margin-bottom: 24px; align-items: stretch;
+    }
+    .intro,.quick-start {
+      padding: 22px; border-radius: var(--radius); border: 1px solid var(--line);
+    }
+    .intro { background: var(--panel); }
+    .quick-start { background: #202426; color: #fff; box-shadow: var(--shadow); }
+    .quick-start p { color: #d8ded6; }
+
+    .toolbar {
+      display: grid; grid-template-columns: minmax(180px,1fr) auto; gap: 12px;
+      align-items: center; margin-bottom: 18px;
+    }
+    .search {
+      width: 100%; min-height: 42px; padding: 10px 12px;
+      border: 1px solid var(--line); border-radius: var(--radius); background: #fff; color: var(--ink);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      min-height: 210px; padding: 16px; background: var(--panel);
+      border: 1px solid var(--line); border-radius: var(--radius);
+      display: flex; flex-direction: column; gap: 10px; cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--accent); }
+    .card.focused { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,118,110,.25); }
+
+    .symbol { font-size: 36px; line-height: 1; font-weight: 750; }
+    .badge {
+      display: inline-flex; width: fit-content; padding: 3px 8px;
+      border-radius: 999px; color: #fff; font-size: 12px;
+    }
+    .badge.vowel { background: var(--accent); }
+    .badge.consonant { background: var(--accent-2); }
+    .examples { color: var(--muted); font-size: 14px; min-height: 42px; }
+    .tip { font-size: 13px; background: #f0f4ef; border-radius: var(--radius); padding: 8px; min-height: 58px; }
+    .card-actions { margin-top: auto; display: flex; gap: 8px; align-items: center; }
+
+    /* ── Detail panel ── */
+    .detail {
+      padding: 18px; background: var(--panel); border: 1px solid var(--line);
+      border-radius: var(--radius); position: sticky; top: 22px;
+    }
+    .detail .symbol { font-size: 58px; margin: 8px 0; }
+    .word-list { display: grid; gap: 8px; margin: 12px 0; }
+    .word {
+      display: flex; justify-content: space-between; gap: 10px; padding: 9px 10px;
+      border: 1px solid var(--line); border-radius: var(--radius); background: #fbfcf8;
+    }
+
+    /* ── Quiz ── */
+    .quiz { max-width: 760px; padding: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+    .quiz-symbol { font-size: 70px; font-weight: 800; margin: 6px 0 12px; }
+    .choices { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin-top: 14px; }
+    .choice { min-height: 64px; padding: 12px; text-align: left; }
+    .choice.correct { border-color: var(--good); background: #e8f5ec; }
+    .choice.wrong { border-color: var(--bad); background: #fae8e8; }
+    .feedback { min-height: 28px; margin-top: 14px; font-weight: 650; }
+    .feedback.good { color: var(--good); }
+    .feedback.bad { color: var(--bad); }
+
+    .empty {
+      padding: 24px; text-align: center; color: var(--muted);
+      border: 1px dashed var(--line); border-radius: var(--radius); background: #fbfcf8;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ── Responsive ── */
+    @media (max-width: 920px) {
+      .app { grid-template-columns: 1fr; }
+      aside { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+      main { padding: 18px; }
+      .hero { grid-template-columns: 1fr; }
+      .detail { position: static; }
+    }
+    @media (max-width: 560px) {
+      .toolbar,.choices { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 24px; }
+      .symbol { font-size: 32px; }
+      .focus-symbol { font-size: 64px; }
+      .focus-examples { font-size: 20px; }
+      .focus-tip { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Focus mode overlay -->
+  <div class="focus-overlay hidden" id="focusOverlay">
+    <div class="focus-video-wrap" id="focusVideo"></div>
+    <div class="focus-symbol" id="focusSymbol"></div>
+    <div class="focus-examples" id="focusExamples"></div>
+    <div class="focus-tip" id="focusTip"></div>
+    <div class="focus-actions">
+      <button id="focusSpeak">🔊 听发音</button>
+      <button id="focusPrev">◀ 上一个</button>
+      <button id="focusNext">下一个 ▶</button>
+      <button class="focus-close" id="focusClose">✕ 返回列表</button>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside>
+      <h1>英语48音标</h1>
+      <p class="sub">跟着小飞老师视频学发音，点哪个学哪个</p>
+
+      <div class="tabs">
+        <button class="tab active" data-view="learn">📖 学习</button>
+        <button class="tab" data-view="video">🎬 视频</button>
+        <button class="tab" data-view="quiz">✏️ 测验</button>
+        <button class="tab" data-view="mistakes">📝 错题</button>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <strong id="learnedCount">0</strong><span>已掌握</span>
+        </div>
+        <div class="stat">
+          <strong id="scoreCount">0</strong><span>答对题</span>
+        </div>
+      </div>
+
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <p class="mini" id="progressText">0 / 48</p>
+
+      <button class="primary" id="startQuiz">开始随机测验</button>
+      <button class="ghost" id="resetProgress">清空进度</button>
+    </aside>
+
+    <main>
+      <!-- Learn view -->
+      <section class="view active" id="learnView">
+        <div class="hero">
+          <div class="intro">
+            <h2>点击任意音标 → 小飞老师带你读</h2>
+            <p>点卡片进入聚焦模式，只显示这一个音标，视频自动跳转到主持人讲解该音标的位置。不点卡片时，可以看完整视频跟学。</p>
+            <div class="filters">
+              <button class="filter active" data-filter="all">全部48个</button>
+              <button class="filter" data-filter="monophthong">单元音 12</button>
+              <button class="filter" data-filter="diphthong">双元音 8</button>
+              <button class="filter" data-filter="voiceless">清辅音</button>
+              <button class="filter" data-filter="voiced">浊辅音</button>
+            </div>
+          </div>
+          <div class="quick-start">
+            <h2>🎬 跟小飞老师学</h2>
+            <p>原视频：一个视频搞定英语48个音标（27分钟）。点音标卡片跳转到对应讲解片段，反复听、反复跟读。</p>
+            <button class="primary" id="dailyPlan">生成今日10分钟计划</button>
+            <p class="mini" id="planText"></p>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <input class="search" id="search" placeholder="搜索音标、例词、中文提示...">
+          <button class="ghost" id="showUnlearned">只看未掌握</button>
+        </div>
+
+        <div class="cards" id="cards"></div>
+      </section>
+
+      <!-- Video view -->
+      <section class="view" id="videoView">
+        <h2>🎬 完整视频</h2>
+        <p class="sub">拖动进度条或点击下方音标卡片跳转到任意讲解片段。建议全屏观看。</p>
+        <div class="video-controls">
+          <span class="timestamp-badge" id="videoTimestamp">⏱ 点击音标跳转</span>
+          <button class="ghost" id="videoPlayPause">⏯ 播放/暂停</button>
+          <button class="ghost" id="videoRewind10">⏪ -10s</button>
+          <button class="ghost" id="videoForward10">⏩ +10s</button>
+        </div>
+        <div class="video-wrap" id="videoWrap"></div>
+        <h3 style="margin-top:18px;">快速跳转到任意音标</h3>
+        <div class="cards" id="videoCards"></div>
+      </section>
+
+      <!-- Quiz view -->
+      <section class="view" id="quizView">
+        <div class="quiz">
+          <h2>随机测验</h2>
+          <p class="mini" id="quizMeta">选择和音标最匹配的例词。</p>
+          <div class="quiz-symbol" id="quizSymbol">/i:/</div>
+          <button class="ghost" id="speakQuiz">播放例词</button>
+          <div class="choices" id="choices"></div>
+          <div class="feedback" id="feedback"></div>
+          <button class="primary" id="nextQuestion">下一题</button>
+        </div>
+      </section>
+
+      <!-- Mistakes view -->
+      <section class="view" id="mistakesView">
+        <div class="mistakes" style="padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);">
+          <h2>错题复习</h2>
+          <div id="mistakeList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════
+    // 48 Phonemes data with estimated video timestamps
+    // Video: https://www.youtube.com/watch?v=g-kzzz8sPS0 (27:22)
+    // Timestamps are ESTIMATED — refine by watching the video and updating videoTime values.
+    // Each phoneme gets ~32s on average, starting from 0:55 (after intro).
+    // ═══════════════════════════════════════════
+    const VIDEO_ID = 'g-kzzz8sPS0';
+    const VIDEO_DURATION = 1642; // 27:22 in seconds
+
+    const phonemes = [
+      // ── Monophthongs (单元音 12) ──
+      { s:"/i:/",  type:"vowel", group:"monophthong", name:"长元音", examples:["see","tea","meet"],  tip:"嘴角向两边拉开，舌位高，声音拉长。",               videoTime: 55 },
+      { s:"/ɪ/",  type:"vowel", group:"monophthong", name:"短元音", examples:["sit","big","fish"],  tip:"比 /i:/ 短而松，嘴不要咧太开。",                   videoTime: 87 },
+      { s:"/e/",  type:"vowel", group:"monophthong", name:"短元音", examples:["bed","head","pen"],  tip:"嘴半开，舌尖轻触下齿，声音短促。",                  videoTime: 119 },
+      { s:"/æ/",  type:"vowel", group:"monophthong", name:"短元音", examples:["cat","map","bad"],   tip:"嘴张大，舌前部抬起，像中文"哎"但更开。",            videoTime: 151 },
+      { s:"/ɑ:/", type:"vowel", group:"monophthong", name:"长元音", examples:["car","father","park"],tip:"口腔打开，舌位低，声音自然拉长。",                  videoTime: 183 },
+      { s:"/ɒ/",  type:"vowel", group:"monophthong", name:"短元音", examples:["hot","dog","box"],   tip:"英式常见，嘴圆而短；美式常接近 /ɑ:/。",            videoTime: 215 },
+      { s:"/ɔ:/", type:"vowel", group:"monophthong", name:"长元音", examples:["law","talk","more"], tip:"双唇收圆，喉咙放松，声音拉长。",                    videoTime: 247 },
+      { s:"/ʊ/",  type:"vowel", group:"monophthong", name:"短元音", examples:["book","good","put"], tip:"嘴唇微圆，短而放松，不要发成中文"乌"。",            videoTime: 279 },
+      { s:"/u:/", type:"vowel", group:"monophthong", name:"长元音", examples:["food","blue","moon"],tip:"双唇收圆，舌后部抬高，声音拉长。",                  videoTime: 311 },
+      { s:"/ʌ/",  type:"vowel", group:"monophthong", name:"短元音", examples:["cup","sun","love"],  tip:"嘴自然张开，短促有力，别拖长。",                    videoTime: 343 },
+      { s:"/ɜ:/", type:"vowel", group:"monophthong", name:"长元音", examples:["bird","word","learn"],tip:"舌中部抬起，口型稳定。英式不卷舌，美式常带 r 色彩。", videoTime: 375 },
+      { s:"/ə/",  type:"vowel", group:"monophthong", name:"弱读音", examples:["about","teacher","sofa"],tip:"最放松的中性音，常出现在非重读音节。",          videoTime: 407 },
+
+      // ── Diphthongs (双元音 8) ──
+      { s:"/eɪ/", type:"vowel", group:"diphthong", name:"双元音", examples:["day","name","take"], tip:"从 /e/ 滑向 /ɪ/，嘴形由半开到收小。",               videoTime: 460 },
+      { s:"/aɪ/", type:"vowel", group:"diphthong", name:"双元音", examples:["time","my","like"],  tip:"从大开口滑向 /ɪ/，后半段轻收。",                   videoTime: 495 },
+      { s:"/ɔɪ/", type:"vowel", group:"diphthong", name:"双元音", examples:["boy","coin","voice"],tip:"先圆唇，再滑向 /ɪ/，两个动作连起来。",               videoTime: 530 },
+      { s:"/əʊ/", type:"vowel", group:"diphthong", name:"双元音", examples:["go","home","boat"],  tip:"英式从 /ə/ 滑向 /ʊ/；美式常写作 /oʊ/。",           videoTime: 565 },
+      { s:"/aʊ/", type:"vowel", group:"diphthong", name:"双元音", examples:["now","house","mouth"],tip:"大开口起音，滑向圆唇，像一条短滑坡。",              videoTime: 600 },
+      { s:"/ɪə/", type:"vowel", group:"diphthong", name:"双元音", examples:["ear","near","idea"], tip:"从 /ɪ/ 滑向 /ə/，结尾放松。",                       videoTime: 635 },
+      { s:"/eə/", type:"vowel", group:"diphthong", name:"双元音", examples:["air","care","where"],tip:"从 /e/ 滑向 /ə/，嘴逐渐放松。",                    videoTime: 670 },
+      { s:"/ʊə/", type:"vowel", group:"diphthong", name:"双元音", examples:["tour","poor","sure"],tip:"从 /ʊ/ 滑向 /ə/，现代口音中有时并入 /ɔ:/。",       videoTime: 705 },
+
+      // ── Consonants: Plosives (爆破音 6) ──
+      { s:"/p/", type:"consonant", group:"voiceless", name:"清辅音", examples:["pen","cap","happy"],tip:"双唇闭合后爆破，声带不振动。",                   videoTime: 750 },
+      { s:"/b/", type:"consonant", group:"voiced",    name:"浊辅音", examples:["boy","cab","baby"], tip:"动作像 /p/，但声带振动。",                       videoTime: 782 },
+      { s:"/t/", type:"consonant", group:"voiceless", name:"清辅音", examples:["tea","cat","city"], tip:"舌尖抵上齿龈后弹开，声带不振动。",               videoTime: 814 },
+      { s:"/d/", type:"consonant", group:"voiced",    name:"浊辅音", examples:["day","red","ready"],tip:"动作像 /t/，但声带振动。",                       videoTime: 846 },
+      { s:"/k/", type:"consonant", group:"voiceless", name:"清辅音", examples:["key","back","school"],tip:"舌后部抵软腭后爆破，声带不振动。",            videoTime: 878 },
+      { s:"/g/", type:"consonant", group:"voiced",    name:"浊辅音", examples:["go","bag","again"], tip:"动作像 /k/，但声带振动。",                       videoTime: 910 },
+
+      // ── Fricatives (摩擦音 9) ──
+      { s:"/f/", type:"consonant", group:"voiceless", name:"清辅音", examples:["fan","life","coffee"],tip:"上齿轻碰下唇，气流摩擦通过。",               videoTime: 950 },
+      { s:"/v/", type:"consonant", group:"voiced",    name:"浊辅音", examples:["very","give","seven"],tip:"动作像 /f/，但声带振动。",                    videoTime: 982 },
+      { s:"/θ/", type:"consonant", group:"voiceless", name:"清辅音", examples:["think","bath","three"],tip:"舌尖轻放上下齿之间，气流通过，别发成 /s/。", videoTime: 1014 },
+      { s:"/ð/", type:"consonant", group:"voiced",    name:"浊辅音", examples:["this","mother","they"],tip:"动作像 /θ/，但声带振动，常见于 this、the。", videoTime: 1046 },
+      { s:"/s/", type:"consonant", group:"voiceless", name:"清辅音", examples:["see","bus","city"], tip:"舌尖靠近上齿龈，气流细而清。",                   videoTime: 1078 },
+      { s:"/z/", type:"consonant", group:"voiced",    name:"浊辅音", examples:["zoo","rose","busy"], tip:"动作像 /s/，但声带振动。",                      videoTime: 1110 },
+      { s:"/ʃ/", type:"consonant", group:"voiceless", name:"清辅音", examples:["she","fish","nation"],tip:"嘴唇略圆，舌面抬起，像轻柔的"嘘"。",          videoTime: 1142 },
+      { s:"/ʒ/", type:"consonant", group:"voiced",    name:"浊辅音", examples:["vision","measure","garage"],tip:"动作像 /ʃ/，但声带振动。",              videoTime: 1174 },
+      { s:"/h/", type:"consonant", group:"voiceless", name:"清辅音", examples:["he","home","behind"],tip:"喉部送气，口型跟后面的元音走。",               videoTime: 1206 },
+
+      // ── Affricates (破擦音 6) ──
+      { s:"/tʃ/",type:"consonant", group:"voiceless", name:"清辅音", examples:["chair","watch","teacher"],tip:"先堵住再摩擦释放，类似"吃"但更短。",    videoTime: 1240 },
+      { s:"/dʒ/",type:"consonant", group:"voiced",    name:"浊辅音", examples:["job","age","orange"],tip:"动作像 /tʃ/，但声带振动。",                   videoTime: 1272 },
+      { s:"/tr/",type:"consonant", group:"voiceless", name:"清辅音", examples:["tree","train","try"],tip:"/t/ 后快速接 /r/，不要拆成两个很慢的音。",     videoTime: 1304 },
+      { s:"/dr/",type:"consonant", group:"voiced",    name:"浊辅音", examples:["dream","drive","drink"],tip:"/d/ 后快速接 /r/，声带振动。",              videoTime: 1336 },
+      { s:"/ts/",type:"consonant", group:"voiceless", name:"清辅音", examples:["cats","gets","lights"],tip:"/t/ 和 /s/ 连续释放，常见于复数或三单结尾。",videoTime: 1368 },
+      { s:"/dz/",type:"consonant", group:"voiced",    name:"浊辅音", examples:["beds","cards","friends"],tip:"/d/ 和 /z/ 连续释放，结尾别吞掉。",        videoTime: 1400 },
+
+      // ── Nasals / Lateral / Approximants (鼻音/舌侧音/半元音 6) ──
+      { s:"/m/", type:"consonant", group:"voiced",    name:"鼻音",   examples:["man","home","summer"],tip:"双唇闭合，声音从鼻腔出来。",                  videoTime: 1440 },
+      { s:"/n/", type:"consonant", group:"voiced",    name:"鼻音",   examples:["no","ten","dinner"],tip:"舌尖抵上齿龈，声音从鼻腔出来。",                videoTime: 1472 },
+      { s:"/ŋ/", type:"consonant", group:"voiced",    name:"鼻音",   examples:["sing","long","English"],tip:"舌后部抬起，常在 ng 里出现，不要加 /g/ 过重。",videoTime: 1504 },
+      { s:"/l/", type:"consonant", group:"voiced",    name:"舌侧音", examples:["light","milk","hello"],tip:"舌尖抵上齿龈，气流从舌两侧通过。",           videoTime: 1536 },
+      { s:"/j/", type:"consonant", group:"voiced",    name:"半元音", examples:["yes","you","yellow"],tip:"像很轻的"耶"起头，快速滑向后面的元音。",       videoTime: 1568 },
+      { s:"/w/", type:"consonant", group:"voiced",    name:"半元音", examples:["we","water","quick"],tip:"双唇收圆后迅速打开，别发成 /v/。",             videoTime: 1600 },
+    ];
+
+    // ── State ──
+    const state = {
+      filter: "all",
+      search: "",
+      onlyUnlearned: false,
+      focusIdx: null,           // index of phoneme in focus mode, null = not focused
+      learned: new Set(JSON.parse(localStorage.getItem("ipa48Learned")||"[]")),
+      mistakes: JSON.parse(localStorage.getItem("ipa48Mistakes")||"[]"),
+      score: Number(localStorage.getItem("ipa48Score")||"0"),
+      currentQuestion: null,
+      answered: false,
+    };
+
+    const $ = id => document.getElementById(id);
+
+    function save() {
+      localStorage.setItem("ipa48Learned", JSON.stringify([...state.learned]));
+      localStorage.setItem("ipa48Mistakes", JSON.stringify(state.mistakes));
+      localStorage.setItem("ipa48Score", String(state.score));
+    }
+
+    // ── TTS ──
+    function speak(text) {
+      if (!("speechSynthesis" in window)) return;
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US"; u.rate = .82;
+      speechSynthesis.speak(u);
+    }
+
+    // ── YouTube IFrame API helpers ──
+    let ytPlayers = {}; // id → iframe
+
+    function createYTPlayer(containerId, opts = {}) {
+      const container = document.getElementById(containerId);
+      if (!container) return null;
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${VIDEO_ID}?enablejsapi=1&rel=0&modestbranding=1${opts.start ? '&start=' + opts.start : ''}${opts.autoplay ? '&autoplay=1' : ''}`;
+      iframe.allow = "autoplay; encrypted-media";
+      iframe.allowFullscreen = true;
+      iframe.id = 'yt-' + containerId;
+      container.innerHTML = '';
+      container.appendChild(iframe);
+      ytPlayers[containerId] = iframe;
+      return iframe;
+    }
+
+    function seekYT(containerId, time) {
+      const iframe = ytPlayers[containerId];
+      if (!iframe) return;
+      iframe.contentWindow.postMessage(JSON.stringify({
+        event: 'command', func: 'seekTo', args: [time, true]
+      }), '*');
+    }
+
+    function playYT(containerId) {
+      const iframe = ytPlayers[containerId];
+      if (!iframe) return;
+      iframe.contentWindow.postMessage(JSON.stringify({
+        event: 'command', func: 'playVideo', args: []
+      }), '*');
+    }
+
+    function pauseYT(containerId) {
+      const iframe = ytPlayers[containerId];
+      if (!iframe) return;
+      iframe.contentWindow.postMessage(JSON.stringify({
+        event: 'command', func: 'pauseVideo', args: []
+      }), '*');
+    }
+
+    // ── Focus mode (single persistent player, seeks on phoneme change) ──
+    let focusIdx = null;
+    let focusPlayerReady = false;
+
+    function ensureFocusPlayer() {
+      const container = $('focusVideo');
+      if (container.querySelector('iframe')) return; // already exists
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${VIDEO_ID}?enablejsapi=1&rel=0&modestbranding=1`;
+      iframe.allow = "autoplay; encrypted-media";
+      iframe.allowFullscreen = true;
+      iframe.id = 'yt-focus';
+      container.appendChild(iframe);
+      ytPlayers['focusVideo'] = iframe;
+      // Mark ready after a short delay (YouTube API initializes)
+      setTimeout(() => { focusPlayerReady = true; }, 1500);
+    }
+
+    function openFocus(idx) {
+      focusIdx = idx;
+      const p = phonemes[idx];
+      $('focusSymbol').textContent = p.s;
+      $('focusExamples').textContent = p.examples.join(' · ');
+      $('focusTip').textContent = p.tip;
+      $('focusOverlay').classList.remove('hidden');
+
+      // Ensure persistent player exists, then seek
+      ensureFocusPlayer();
+      const startTime = Math.max(0, p.videoTime - 2);
+      if (focusPlayerReady) {
+        seekYT('focusVideo', startTime);
+        playYT('focusVideo');
+      } else {
+        // Player not ready yet — retry after load
+        setTimeout(() => {
+          seekYT('focusVideo', startTime);
+          playYT('focusVideo');
+          focusPlayerReady = true;
+        }, 1800);
+      }
+
+      // Update card highlights
+      document.querySelectorAll('.card').forEach((c, i) => {
+        c.classList.toggle('focused', i === idx);
+      });
+
+      // Scroll the card into view when returning
+      const cardEl = document.querySelector(`.card[data-idx="${idx}"]`);
+      if (cardEl) cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function closeFocus() {
+      focusIdx = null;
+      $('focusOverlay').classList.add('hidden');
+      pauseYT('focusVideo');
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('focused'));
+    }
+
+    function focusPrev() {
+      if (focusIdx === null) return;
+      const visible = visiblePhonemes();
+      const realIdx = phonemes.indexOf(visible[focusIdx > 0 ? focusIdx - 1 : visible.length - 1]);
+      openFocus(Math.max(0, realIdx));
+    }
+
+    function focusNext() {
+      if (focusIdx === null) return;
+      const visible = visiblePhonemes();
+      const realIdx = phonemes.indexOf(visible[(focusIdx + 1) % visible.length]);
+      openFocus(Math.min(phonemes.length - 1, realIdx));
+    }
+
+    // Keyboard nav
+    document.addEventListener('keydown', e => {
+      if (focusIdx === null) return;
+      if (e.key === 'Escape') closeFocus();
+      if (e.key === 'ArrowLeft') focusPrev();
+      if (e.key === 'ArrowRight') focusNext();
+    });
+
+    // ── Filtering ──
+    function visiblePhonemes() {
+      const q = state.search.trim().toLowerCase();
+      return phonemes.filter(p => {
+        const g = state.filter === 'all' || p.group === state.filter;
+        const s = !q || [p.s, p.name, p.tip, ...p.examples].join(' ').toLowerCase().includes(q);
+        const l = !state.onlyUnlearned || !state.learned.has(p.s);
+        return g && s && l;
+      });
+    }
+
+    // ── Render ──
+    function renderStats() {
+      $('learnedCount').textContent = state.learned.size;
+      $('scoreCount').textContent = state.score;
+      $('progressText').textContent = `${state.learned.size} / ${phonemes.length}`;
+      $('progressFill').style.width = `${Math.round(state.learned.size / phonemes.length * 100)}%`;
+    }
+
+    function fmtTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
+    function cardHTML(p, idx, showVideoTime = false) {
+      return `
+        <article class="card" data-idx="${idx}">
+          <span class="badge ${p.type}">${p.name}</span>
+          <div class="symbol">${p.s}</div>
+          <div class="examples">${p.examples.join(' · ')}</div>
+          <div class="tip">${p.tip}</div>
+          <div class="card-actions">
+            <button class="icon-btn" data-action="speak" data-idx="${idx}" title="播放例词 (TTS)">▶</button>
+            <button class="icon-btn" data-action="focus" data-idx="${idx}" title="聚焦模式 — 只看这个音标 + 视频讲解">🎯</button>
+            ${showVideoTime ? `<span style="font-size:12px;color:var(--muted);">${fmtTime(p.videoTime)}</span>` : ''}
+            <button class="ghost" data-action="learn" data-idx="${idx}">${state.learned.has(p.s) ? '已掌握' : '标记掌握'}</button>
+          </div>
+        </article>`;
+    }
+
+    function renderCards() {
+      const items = visiblePhonemes();
+      $('cards').innerHTML = items.length
+        ? items.map(p => cardHTML(p, phonemes.indexOf(p))).join('')
+        : '<div class="empty">没有匹配的音标。换个筛选条件试试。</div>';
+    }
+
+    function renderVideoCards() {
+      const items = visiblePhonemes();
+      $('videoCards').innerHTML = items.length
+        ? items.map(p => cardHTML(p, phonemes.indexOf(p), true)).join('')
+        : '<div class="empty">没有匹配的音标。</div>';
+    }
+
+    function renderMistakes() {
+      if (!state.mistakes.length) {
+        $('mistakeList').innerHTML = '<div class="empty">暂时没有错题。去测验区做几题吧。</div>';
+        return;
+      }
+      const unique = [...new Map(state.mistakes.map(m => [m.symbol, m])).values()];
+      $('mistakeList').innerHTML = `<div class="cards">${unique.map(m => {
+        const p = phonemes.find(x => x.s === m.symbol);
+        if (!p) return '';
+        return cardHTML(p, phonemes.indexOf(p));
+      }).join('')}</div>`;
+    }
+
+    // ── Quiz ──
+    function makeQuestion() {
+      const answer = phonemes[Math.floor(Math.random() * phonemes.length)];
+      const wrong = phonemes.filter(p => p.s !== answer.s).sort(() => Math.random() - .5).slice(0, 3);
+      state.currentQuestion = { answer, choices: [answer, ...wrong].sort(() => Math.random() - .5) };
+      state.answered = false;
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = state.currentQuestion || { answer: phonemes[0], choices: phonemes.slice(0, 4) };
+      $('quizSymbol').textContent = q.answer.s;
+      $('choices').innerHTML = q.choices.map(p => `
+        <button class="choice" data-choice="${p.s}">
+          <strong>${p.examples[0]}</strong><br>
+          <span class="mini">${p.examples.slice(1).join(' · ')}｜${p.tip}</span>
+        </button>
+      `).join('');
+      $('feedback').textContent = '';
+      $('feedback').className = 'feedback';
+      $('quizMeta').textContent = `题目来自：${q.answer.name}。选择最匹配的例词。`;
+    }
+
+    function answerQuestion(symbol) {
+      if (state.answered || !state.currentQuestion) return;
+      state.answered = true;
+      const right = symbol === state.currentQuestion.answer.s;
+      document.querySelectorAll('.choice').forEach(btn => {
+        if (btn.dataset.choice === state.currentQuestion.answer.s) btn.classList.add('correct');
+        if (btn.dataset.choice === symbol && !right) btn.classList.add('wrong');
+      });
+      if (right) {
+        state.score++;
+        state.learned.add(state.currentQuestion.answer.s);
+        $('feedback').textContent = '✅ 答对了！这个音可以通过。';
+        $('feedback').classList.add('good');
+      } else {
+        state.mistakes.unshift({ symbol: state.currentQuestion.answer.s, at: new Date().toISOString() });
+        state.mistakes = state.mistakes.slice(0, 60);
+        $('feedback').textContent = `❌ 再看一眼：${state.currentQuestion.answer.s} 的例词是 ${state.currentQuestion.answer.examples.join(', ')}。`;
+        $('feedback').classList.add('bad');
+      }
+      save();
+      renderStats();
+    }
+
+    // ── View switching ──
+    function setView(view) {
+      document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+      document.querySelectorAll('.view').forEach(s => s.classList.remove('active'));
+      const el = document.getElementById(view + 'View');
+      if (el) el.classList.add('active');
+
+      if (view === 'video') {
+        if (!$('videoWrap').querySelector('iframe')) createYTPlayer('videoWrap');
+        renderVideoCards();
+      }
+      if (view === 'quiz' && !state.currentQuestion) makeQuestion();
+      if (view === 'mistakes') renderMistakes();
+    }
+
+    function renderAll() {
+      renderStats();
+      renderCards();
+      renderMistakes();
+    }
+
+    // ── Event delegation ──
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+
+      // Tab switch
+      if (btn.dataset.view) setView(btn.dataset.view);
+
+      // Filter
+      if (btn.dataset.filter) {
+        state.filter = btn.dataset.filter;
+        document.querySelectorAll('.filter').forEach(b => b.classList.toggle('active', b.dataset.filter === state.filter));
+        renderCards();
+        if (document.getElementById('videoView').classList.contains('active')) renderVideoCards();
+      }
+
+      // Card actions
+      const idx = btn.dataset.idx !== undefined ? parseInt(btn.dataset.idx) : null;
+      if (idx !== null && !isNaN(idx)) {
+        if (btn.dataset.action === 'speak') speak(phonemes[idx].examples[0]);
+        if (btn.dataset.action === 'focus') openFocus(idx);
+        if (btn.dataset.action === 'learn') {
+          if (state.learned.has(phonemes[idx].s)) state.learned.delete(phonemes[idx].s);
+          else state.learned.add(phonemes[idx].s);
+          save();
+          renderAll();
+          if (document.getElementById('videoView').classList.contains('active')) renderVideoCards();
+        }
+      }
+
+      // Quiz
+      if (btn.dataset.choice) answerQuestion(btn.dataset.choice);
+    });
+
+    // Also handle clicks directly on .card elements (not just buttons)
+    document.addEventListener('click', e => {
+      if (focusIdx !== null) return; // Don't handle card clicks when in focus mode
+      const card = e.target.closest('.card');
+      if (!card) return;
+      if (e.target.closest('button')) return; // Button clicks handled above
+      const idx = parseInt(card.dataset.idx);
+      if (!isNaN(idx)) openFocus(idx);
+    });
+
+    // ── Search ──
+    $('search').addEventListener('input', e => {
+      state.search = e.target.value;
+      renderCards();
+    });
+
+    // ── Show unlearned toggle ──
+    $('showUnlearned').addEventListener('click', () => {
+      state.onlyUnlearned = !state.onlyUnlearned;
+      $('showUnlearned').textContent = state.onlyUnlearned ? '显示全部' : '只看未掌握';
+      renderCards();
+    });
+
+    // ── Quiz controls ──
+    $('startQuiz').addEventListener('click', () => { setView('quiz'); makeQuestion(); });
+    $('nextQuestion').addEventListener('click', makeQuestion);
+    $('speakQuiz').addEventListener('click', () => {
+      if (state.currentQuestion) speak(state.currentQuestion.answer.examples[0]);
+    });
+
+    // ── Daily plan ──
+    $('dailyPlan').addEventListener('click', () => {
+      const pending = phonemes.filter(p => !state.learned.has(p.s)).slice(0, 8);
+      $('planText').textContent = pending.length
+        ? `今天练：${pending.map(p => p.s).join(' ')}。每个音听3遍、跟读5遍、做1题测验。`
+        : '48个都标记掌握了。今天直接做随机测验巩固。';
+    });
+
+    // ── Reset ──
+    $('resetProgress').addEventListener('click', () => {
+      if (!confirm('确认清空学习进度、得分和错题吗？')) return;
+      state.learned.clear();
+      state.mistakes = [];
+      state.score = 0;
+      save();
+      renderAll();
+    });
+
+    // ── Focus mode controls ──
+    $('focusClose').addEventListener('click', closeFocus);
+    $('focusPrev').addEventListener('click', focusPrev);
+    $('focusNext').addEventListener('click', focusNext);
+    $('focusSpeak').addEventListener('click', () => {
+      if (focusIdx !== null) speak(phonemes[focusIdx].examples[0]);
+    });
+
+    // ── Video tab controls ──
+    $('videoPlayPause').addEventListener('click', () => {
+      // Toggle play/pause — we can only send one command reliably, so we send play
+      playYT('videoWrap');
+    });
+    $('videoRewind10').addEventListener('click', () => {
+      // Approximate — seek relative to current (will need manual timestamp tracking)
+      // For simplicity, we use postMessage to seek based on a rough estimate
+      const iframe = ytPlayers['videoWrap'];
+      if (!iframe) return;
+      iframe.contentWindow.postMessage(JSON.stringify({
+        event: 'command', func: 'seekTo', args: [Math.max(0, (state._videoTime || 0) - 10), true]
+      }), '*');
+    });
+    $('videoForward10').addEventListener('click', () => {
+      const iframe = ytPlayers['videoWrap'];
+      if (!iframe) return;
+      iframe.contentWindow.postMessage(JSON.stringify({
+        event: 'command', func: 'seekTo', args: [(state._videoTime || 0) + 10, true]
+      }), '*');
+    });
+
+    // ── Listen for YouTube API messages (time updates) ──
+    window.addEventListener('message', e => {
+      if (e.origin !== 'https://www.youtube.com') return;
+      try {
+        const data = JSON.parse(e.data);
+        if (data.event === 'infoDelivery' && data.info && data.info.currentTime) {
+          state._videoTime = data.info.currentTime;
+        }
+      } catch (_) {}
+    });
+
+    // ── Init ──
+    makeQuestion();
+    renderAll();
+  </script>
+</body>
+</html>

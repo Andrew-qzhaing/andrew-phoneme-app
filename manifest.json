@@ -1,0 +1,22 @@
+{
+  "name": "英语48音标练习",
+  "short_name": "48音标",
+  "description": "跟着小飞老师视频学英语48个音标，点击哪个学哪个",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
