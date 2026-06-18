@@ -37,9 +37,12 @@
     main{padding:6px}
 
     .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:5px}
-    .card{padding:8px;background:var(--pn);border:1px solid var(--ln);border-radius:var(--r);cursor:pointer;transition:transform .1s,box-shadow .1s}
+    .card{padding:8px;background:var(--pn);border:2px solid var(--ln);border-radius:var(--r);cursor:pointer;transition:transform .1s,box-shadow .1s;position:relative}
+    .card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
     .card:active{transform:scale(.97)}
+    .card::after{content:"点击展开 ▶";position:absolute;top:6px;right:8px;font-size:9px;color:var(--mu);opacity:.6}
     .card.expanded{border-color:var(--ac);box-shadow:0 0 0 3px rgba(15,118,110,.15);grid-column:1/-1}
+    .card.expanded::after{content:"点击收起 ▲";color:var(--ac);opacity:1}
     .card .sym{font-size:26px;font-weight:750;line-height:1.1}
     .card .tag{display:inline-block;padding:2px 4px;border-radius:999px;color:#fff;font-size:9px;margin-bottom:2px}
     .card .tag.vowel{background:var(--ac)}.card .tag.consonant{background:var(--a2)}
@@ -278,8 +281,25 @@ function checkPron(idx){
 function makeQuiz(){const a=phonemes[Math.floor(Math.random()*phonemes.length)],w=phonemes.filter(p=>p.s!==a.s).sort(()=>Math.random()-.5).slice(0,3);S.quizQ={answer:a,choices:[a,...w].sort(()=>Math.random()-.5)};S.quizDone=false;$('quizSym').textContent=S.quizQ.answer.s;$('quizRow').innerHTML=S.quizQ.choices.map(p=>`<button data-choice="${p.s}"><b>${p.eg[0]}</b><br><small>${p.eg.slice(1).join('·')}</small></button>`).join('');$('quizFb').textContent=''}
 function answerQuiz(sym){if(S.quizDone||!S.quizQ)return;S.quizDone=true;const right=sym===S.quizQ.answer.s;document.querySelectorAll('#quizRow button').forEach(b=>{if(b.dataset.choice===S.quizQ.answer.s)b.classList.add('correct');if(b.dataset.choice===sym&&!right)b.classList.add('wrong')});if(right){S.score++;S.learned.add(S.quizQ.answer.s);$('quizFb').innerHTML='<span style="color:var(--gd)">✅ 答对了！</span>'}else{S.mistakes.unshift({symbol:S.quizQ.answer.s,at:new Date().toISOString()});S.mistakes=S.mistakes.slice(0,60);$('quizFb').innerHTML='<span style="color:var(--bd)">❌ '+S.quizQ.answer.s+' → '+S.quizQ.answer.eg[0]+'</span>'}save();updateStats()}
 
-// Events
+// Events — whole card is clickable
 document.addEventListener('click',e=>{
+  // Check if clicked on a card
+  const card = e.target.closest('.card');
+  if (card && !e.target.closest('button')) {
+    const idx = +card.dataset.idx;
+    if (!isNaN(idx)) {
+      const wasExp = S.expandedIdx === idx;
+      S.expandedIdx = wasExp ? -1 : idx;
+      updateCards();
+      if (!wasExp) setTimeout(() => {
+        const c = document.querySelector('.card[data-idx="'+idx+'"]');
+        if (c) c.scrollIntoView({behavior:'smooth',block:'center'});
+        seekVideo(idx);
+      }, 300);
+      return;
+    }
+  }
+
   const btn=e.target.closest('button');if(!btn)return;
   const idx=btn.dataset.idx!==undefined?+btn.dataset.idx:null;
   if(btn.dataset.filter!==undefined){S.filter=btn.dataset.filter;document.querySelectorAll('.filters button').forEach(b=>b.classList.toggle('active',b.dataset.filter===S.filter));S.expandedIdx=-1;updateCards();return}
