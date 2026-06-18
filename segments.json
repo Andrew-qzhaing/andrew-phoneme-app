@@ -1,412 +1,338 @@
 [
   {
     "id": 0,
+    "symbol": "/i:/",
     "src": "clips/s00.mp4",
     "start": 79,
-    "symbols": [
-      "/i:/"
-    ],
-    "verified": true
+    "size_kb": 618
   },
   {
     "id": 1,
+    "symbol": "/ɪ/",
     "src": "clips/s01.mp4",
     "start": 118,
-    "symbols": [
-      "/ɪ/"
-    ],
-    "verified": false
+    "size_kb": 573
   },
   {
     "id": 2,
+    "symbol": "/e/",
     "src": "clips/s02.mp4",
     "start": 148,
-    "symbols": [
-      "/e/"
-    ],
-    "verified": false
+    "size_kb": 591
   },
   {
     "id": 3,
+    "symbol": "/æ/",
     "src": "clips/s03.mp4",
     "start": 178,
-    "symbols": [
-      "/æ/"
-    ],
-    "verified": false
+    "size_kb": 608
   },
   {
     "id": 4,
+    "symbol": "/ɑ:/",
     "src": "clips/s04.mp4",
     "start": 207,
-    "symbols": [
-      "/ʊ/"
-    ],
-    "verified": true
+    "size_kb": 605
   },
   {
     "id": 5,
+    "symbol": "/ɒ/",
     "src": "clips/s05.mp4",
     "start": 237,
-    "symbols": [
-      "/ɒ/"
-    ],
-    "verified": false
+    "size_kb": 554
   },
   {
     "id": 6,
+    "symbol": "/ɔ:/",
     "src": "clips/s06.mp4",
     "start": 267,
-    "symbols": [
-      "/ɔ:/"
-    ],
-    "verified": false
+    "size_kb": 569
   },
   {
     "id": 7,
+    "symbol": "/ʊ/",
     "src": "clips/s07.mp4",
     "start": 297,
-    "symbols": [
-      "/u:/"
-    ],
-    "verified": false
+    "size_kb": 615
   },
   {
     "id": 8,
+    "symbol": "/u:/",
     "src": "clips/s08.mp4",
     "start": 327,
-    "symbols": [
-      "/ʌ/"
-    ],
-    "verified": false
+    "size_kb": 576
   },
   {
     "id": 9,
+    "symbol": "/ʌ/",
     "src": "clips/s09.mp4",
     "start": 357,
-    "symbols": [
-      "/ɜ:/"
-    ],
-    "verified": false
+    "size_kb": 590
   },
   {
     "id": 10,
+    "symbol": "/ɜ:/",
     "src": "clips/s10.mp4",
-    "start": 387,
-    "symbols": [
-      "/ə/"
-    ],
-    "verified": false
+    "start": 395,
+    "size_kb": 607
   },
   {
     "id": 11,
+    "symbol": "/ə/",
     "src": "clips/s11.mp4",
-    "start": 417,
-    "symbols": [
-      "/ɑ:/"
-    ],
-    "verified": false
+    "start": 425,
+    "size_kb": 551
   },
   {
     "id": 12,
+    "symbol": "/eɪ/",
     "src": "clips/s12.mp4",
-    "start": 447,
-    "symbols": [
-      "/eɪ/"
-    ],
-    "verified": false
+    "start": 455,
+    "size_kb": 564
   },
   {
     "id": 13,
+    "symbol": "/aɪ/",
     "src": "clips/s13.mp4",
-    "start": 477,
-    "symbols": [
-      "/ɔɪ/"
-    ],
-    "verified": false
+    "start": 484,
+    "size_kb": 566
   },
   {
     "id": 14,
+    "symbol": "/ɔɪ/",
     "src": "clips/s14.mp4",
-    "start": 507,
-    "symbols": [
-      "/əʊ/"
-    ],
-    "verified": false
+    "start": 504,
+    "size_kb": 571
   },
   {
     "id": 15,
+    "symbol": "/əʊ/",
     "src": "clips/s15.mp4",
-    "start": 537,
-    "symbols": [
-      "/aʊ/"
-    ],
-    "verified": false
+    "start": 534,
+    "size_kb": 562
   },
   {
     "id": 16,
+    "symbol": "/aʊ/",
     "src": "clips/s16.mp4",
-    "start": 573,
-    "symbols": [
-      "/aɪ/"
-    ],
-    "verified": true
+    "start": 553,
+    "size_kb": 556
   },
   {
     "id": 17,
+    "symbol": "/ɪə/",
     "src": "clips/s17.mp4",
-    "start": 603,
-    "symbols": [
-      "/ɪə/"
-    ],
-    "verified": false
+    "start": 573,
+    "size_kb": 543
   },
   {
     "id": 18,
+    "symbol": "/eə/",
     "src": "clips/s18.mp4",
-    "start": 633,
-    "symbols": [
-      "/eə/"
-    ],
-    "verified": false
+    "start": 603,
+    "size_kb": 533
   },
   {
     "id": 19,
+    "symbol": "/ʊə/",
     "src": "clips/s19.mp4",
-    "start": 663,
-    "symbols": [
-      "/ʊə/"
-    ],
-    "verified": false
+    "start": 623,
+    "size_kb": 577
   },
   {
     "id": 20,
+    "symbol": "/p/",
     "src": "clips/s20.mp4",
-    "start": 693,
-    "symbols": [
-      "/p/"
-    ],
-    "verified": false
+    "start": 642,
+    "size_kb": 574
   },
   {
     "id": 21,
+    "symbol": "/b/",
     "src": "clips/s21.mp4",
-    "start": 723,
-    "symbols": [
-      "/t/"
-    ],
-    "verified": false
+    "start": 662,
+    "size_kb": 545
   },
   {
     "id": 22,
+    "symbol": "/t/",
     "src": "clips/s22.mp4",
-    "start": 753,
-    "symbols": [
-      "/k/"
-    ],
-    "verified": false
+    "start": 682,
+    "size_kb": 562
   },
   {
     "id": 23,
+    "symbol": "/d/",
     "src": "clips/s23.mp4",
-    "start": 783,
-    "symbols": [
-      "/f/"
-    ],
-    "verified": false
+    "start": 702,
+    "size_kb": 578
   },
   {
     "id": 24,
+    "symbol": "/k/",
     "src": "clips/s24.mp4",
-    "start": 813,
-    "symbols": [
-      "/θ/"
-    ],
-    "verified": false
+    "start": 731,
+    "size_kb": 577
   },
   {
     "id": 25,
+    "symbol": "/ɡ/",
     "src": "clips/s25.mp4",
-    "start": 843,
-    "symbols": [
-      "/s/"
-    ],
-    "verified": false
+    "start": 761,
+    "size_kb": 585
   },
   {
     "id": 26,
+    "symbol": "/f/",
     "src": "clips/s26.mp4",
-    "start": 880,
-    "symbols": [
-      "/p/",
-      "/b/"
-    ],
-    "verified": true
+    "start": 781,
+    "size_kb": 568
   },
   {
     "id": 27,
+    "symbol": "/v/",
     "src": "clips/s27.mp4",
-    "start": 920,
-    "symbols": [
-      "/t/",
-      "/d/"
-    ],
-    "verified": false
+    "start": 801,
+    "size_kb": 578
   },
   {
     "id": 28,
+    "symbol": "/θ/",
     "src": "clips/s28.mp4",
-    "start": 960,
-    "symbols": [
-      "/k/",
-      "/ɡ/"
-    ],
-    "verified": false
+    "start": 830,
+    "size_kb": 549
   },
   {
     "id": 29,
+    "symbol": "/ð/",
     "src": "clips/s29.mp4",
-    "start": 1000,
-    "symbols": [
-      "/f/",
-      "/v/"
-    ],
-    "verified": false
+    "start": 880,
+    "size_kb": 565
   },
   {
     "id": 30,
+    "symbol": "/s/",
     "src": "clips/s30.mp4",
-    "start": 1040,
-    "symbols": [
-      "/θ/",
-      "/ð/"
-    ],
-    "verified": false
+    "start": 929,
+    "size_kb": 569
   },
   {
     "id": 31,
+    "symbol": "/z/",
     "src": "clips/s31.mp4",
-    "start": 1080,
-    "symbols": [
-      "/s/",
-      "/z/"
-    ],
-    "verified": false
+    "start": 959,
+    "size_kb": 561
   },
   {
     "id": 32,
+    "symbol": "/ʃ/",
     "src": "clips/s32.mp4",
-    "start": 1120,
-    "symbols": [
-      "/r/"
-    ],
-    "verified": false
+    "start": 1008,
+    "size_kb": 574
   },
   {
     "id": 33,
+    "symbol": "/ʒ/",
     "src": "clips/s33.mp4",
-    "start": 1150,
-    "symbols": [
-      "/h/"
-    ],
-    "verified": false
+    "start": 1030,
+    "size_kb": 550
   },
   {
     "id": 34,
+    "symbol": "/r/",
     "src": "clips/s34.mp4",
-    "start": 1177,
-    "symbols": [
-      "/s/",
-      "/z/"
-    ],
-    "verified": true
+    "start": 1048,
+    "size_kb": 571
   },
   {
     "id": 35,
+    "symbol": "/h/",
     "src": "clips/s35.mp4",
-    "start": 1217,
-    "symbols": [
-      "/ʃ/",
-      "/ʒ/"
-    ],
-    "verified": false
+    "start": 1068,
+    "size_kb": 561
   },
   {
     "id": 36,
+    "symbol": "/tʃ/",
     "src": "clips/s36.mp4",
-    "start": 1266,
-    "symbols": [
-      "/ʃ/",
-      "/ʒ/"
-    ],
-    "verified": true
+    "start": 1117,
+    "size_kb": 544
   },
   {
     "id": 37,
+    "symbol": "/dʒ/",
     "src": "clips/s37.mp4",
-    "start": 1305,
-    "symbols": [
-      "/tʃ/",
-      "/dʒ/"
-    ],
-    "verified": true
+    "start": 1147,
+    "size_kb": 531
   },
   {
     "id": 38,
+    "symbol": "/tr/",
     "src": "clips/s38.mp4",
-    "start": 1345,
-    "symbols": [
-      "/tr/",
-      "/dr/"
-    ],
-    "verified": false
+    "start": 1177,
+    "size_kb": 502
   },
   {
     "id": 39,
+    "symbol": "/dr/",
     "src": "clips/s39.mp4",
-    "start": 1385,
-    "symbols": [
-      "/m/",
-      "/n/",
-      "/ŋ/"
-    ],
-    "verified": false
+    "start": 1196,
+    "size_kb": 536
   },
   {
     "id": 40,
+    "symbol": "/ts/",
     "src": "clips/s40.mp4",
-    "start": 1414,
-    "symbols": [
-      "/ts/",
-      "/dz/"
-    ],
-    "verified": true
+    "start": 1226,
+    "size_kb": 521
   },
   {
     "id": 41,
+    "symbol": "/dz/",
     "src": "clips/s41.mp4",
-    "start": 1454,
-    "symbols": [
-      "/l/"
-    ],
-    "verified": false
+    "start": 1266,
+    "size_kb": 533
   },
   {
     "id": 42,
+    "symbol": "/m/",
     "src": "clips/s42.mp4",
-    "start": 1484,
-    "symbols": [
-      "/j/"
-    ],
-    "verified": false
+    "start": 1285,
+    "size_kb": 543
   },
   {
     "id": 43,
+    "symbol": "/n/",
     "src": "clips/s43.mp4",
-    "start": 1514,
-    "symbols": [
-      "/w/"
-    ],
-    "verified": false
+    "start": 1305,
+    "size_kb": 534
+  },
+  {
+    "id": 44,
+    "symbol": "/ŋ/",
+    "src": "clips/s44.mp4",
+    "start": 1335,
+    "size_kb": 0
+  },
+  {
+    "id": 45,
+    "symbol": "/l/",
+    "src": "clips/s45.mp4",
+    "start": 1384,
+    "size_kb": 0
+  },
+  {
+    "id": 46,
+    "symbol": "/j/",
+    "src": "clips/s46.mp4",
+    "start": 1414,
+    "size_kb": 0
+  },
+  {
+    "id": 47,
+    "symbol": "/w/",
+    "src": "clips/s47.mp4",
+    "start": 1434,
+    "size_kb": 0
   }
 ]
