@@ -206,13 +206,13 @@ function cardHTML(p){
     <div class="detail">
       <div class="big-sym">${p.s}</div>
       <div class="sentence">${p.sentence}<small>例词: ${p.eg.join(' · ')}</small></div>
+      <button data-act="vidplay" data-idx="${i}" style="display:block;width:100%;max-width:400px;margin:8px auto;padding:12px;background:var(--bd);color:#fff;border:0;border-radius:var(--r);cursor:pointer;font-size:16px;font-weight:700">▶ 播放视频讲解（主持人示范 ${p.s}）</button>
       <div class="vid-row">
-        <button data-act="vidplay" data-idx="${i}">▶ 播视频</button>
-        <button data-act="vidback" data-idx="${i}">-5s</button>
-        <button data-act="vidfwd" data-idx="${i}">+5s</button>
-        <span class="ts-label">⏱ ${fmt(t)}${off?' (±'+off+'s)':''}</span>
+        <button data-act="vidback" data-idx="${i}">-5s 往前</button>
+        <button data-act="vidfwd" data-idx="${i}">+5s 往后</button>
+        <span class="ts-label">⏱ ${fmt(t)}${off?' (已调'+off+'s)':''}</span>
       </div>
-      <video class="detail-vid" data-idx="${i}" src="video.mp4#t=${t}" controls playsinline preload="none" style="display:block"></video>
+      <video class="detail-vid" data-idx="${i}" src="video.mp4#t=${t}" controls playsinline preload="none" style="display:block;width:100%;max-width:400px;margin:6px auto;background:#000;border-radius:var(--r)"></video>
       <div class="practice-row">
         <button class="btn-listen" data-act="listen" data-idx="${i}">🔊 标准音</button>
         <button class="btn-record" data-act="record" data-idx="${i}">🎙 录音</button>
