@@ -54,7 +54,10 @@
     .detail .sentence{text-align:center;font-size:15px;color:var(--ac);margin:4px 0}
     .detail .sentence small{display:block;font-size:11px;color:var(--mu)}
 
-    .clip-video{width:100%;max-width:400px;margin:8px auto;display:block;background:#000;border-radius:var(--r)}
+    .detail .vid-row{display:flex;gap:4px;align-items:center;margin:6px 0;flex-wrap:wrap;justify-content:center}
+    .detail .vid-row button{min-height:28px;padding:3px 8px;border:1px solid var(--ln);border-radius:4px;background:var(--pn);cursor:pointer;font-size:11px}
+    .detail .vid-row .ts-label{font-size:11px;color:var(--mu)}
+    .detail video{width:100%;max-width:400px;max-height:200px;background:#000;border-radius:var(--r);display:block;margin:4px auto}
 
     .detail .practice-row{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:8px 0}
     .detail .practice-row button{min-height:36px;padding:6px 12px;border-radius:var(--r);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:3px}
@@ -126,66 +129,67 @@
 
 <script>
 const phonemes = [
-  {s:"/i:/",g:"monophthong",t:"vowel",n:"长元音",eg:["see","tea","meet"],sentence:"She sees the sea on the beach.",art:"舌前部抬高靠近硬腭，嘴角用力向两边拉开，声音拉长。",err:"别发成中文'衣'——嘴角要拉得更开，舌位更高。",clip:0},
-  {s:"/ɪ/",g:"monophthong",t:"vowel",n:"短元音",eg:["sit","big","fish"],sentence:"Sit in the big city.",art:"比 /i:/ 稍低稍松，嘴角微咧但不拉太开。短促有力。",err:"别和 /i:/ 搞混——'sheep'是羊，'ship'是船，嘴松一点就对了。",clip:1},
-  {s:"/e/",g:"monophthong",t:"vowel",n:"短元音",eg:["bed","head","pen"],sentence:"Let me get a red pen.",art:"嘴半张开，舌尖轻触下齿。声音短促。",err:"不要发成中文'爱'——嘴巴不要张太大，声音要干脆。",clip:2},
-  {s:"/æ/",g:"monophthong",t:"vowel",n:"短元音",eg:["cat","map","bad"],sentence:"The black cat sat on the mat.",art:"嘴张大！下颚下沉，舌前部抬起。是所有前元音里开口最大的。",err:"很多中国人发成 /e/——要把嘴张大到能塞两根手指。",clip:3},
-  {s:"/ɑ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["car","father","park"],sentence:"My father parked the car far away.",art:"口腔完全打开，舌位放到最低，声音拉长。",err:"美式常带 r 色彩，英式不卷舌。",clip:4},
-  {s:"/ɒ/",g:"monophthong",t:"vowel",n:"短元音",eg:["hot","dog","box"],sentence:"The hot dog is in the box.",art:"嘴唇收圆，舌后部抬起，声音短促。",err:"美式里这个音常变成 /ɑ:/。",clip:5},
-  {s:"/ɔ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["law","talk","more"],sentence:"I saw more laws on the door.",art:"双唇充分收圆，像吹口哨的嘴型。声音拉长。",err:"别发成 /ɒ/ 拉长版——嘴要更圆更紧。",clip:6},
-  {s:"/ʊ/",g:"monophthong",t:"vowel",n:"短元音",eg:["book","good","put"],sentence:"Put the good book here.",art:"嘴唇微圆、放松，舌后部微抬。短而轻。",err:"不是中文'乌'——嘴唇没那么圆。",clip:7},
-  {s:"/u:/",g:"monophthong",t:"vowel",n:"长元音",eg:["food","blue","moon"],sentence:"The blue moon is cool.",art:"双唇用力收圆、向前突出。舌后部充分抬高。",err:"别发成中文'乌'——嘴唇要更前突更圆。",clip:8},
-  {s:"/ʌ/",g:"monophthong",t:"vowel",n:"短元音",eg:["cup","sun","love"],sentence:"I love the sunny cup.",art:"嘴自然张开，舌中部微抬。短促有力。",err:"不要发成中文'啊'——嘴不要张太大。",clip:9},
-  {s:"/ɜ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["bird","word","learn"],sentence:"The bird learned a new word.",art:"舌中部抬起，口型稳定。英式不卷舌。",err:"英式不要卷舌，舌尖不要碰到上颚。",clip:10},
-  {s:"/ə/",g:"monophthong",t:"vowel",n:"弱读音",eg:["about","teacher","sofa"],sentence:"The teacher is about to arrive.",art:"全身最放松的音！嘴微张，舌自然平放。",err:"出现在非重读音节——如 'banana' 首尾的 a。",clip:11},
-  {s:"/eɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["day","name","take"],sentence:"Take the train today.",art:"从 /e/ 滑向 /ɪ/。前半段嘴半开，后半段嘴收小。",err:"别发成中文'诶'——要有滑动过程，前重后轻。",clip:12},
-  {s:"/aɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["time","my","like"],sentence:"I like my time alone.",art:"从大开口滑向 /ɪ/。前半张嘴张大，后半段迅速收拢。",err:"别发成中文'爱'——开头嘴要更大。",clip:13},
-  {s:"/ɔɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["boy","coin","voice"],sentence:"The boy's voice is full of joy.",art:"从圆唇滑向 /ɪ/，嘴唇由圆变扁，一气呵成。",err:"不要断成'哦-衣'两拍。",clip:14},
-  {s:"/əʊ/",g:"diphthong",t:"vowel",n:"双元音",eg:["go","home","boat"],sentence:"Go home on the old boat.",art:"从 /ə/ 滑向 /ʊ/，嘴唇由微开到圆。",err:"别发成中文'欧'——英语有滑动过程。",clip:15},
-  {s:"/aʊ/",g:"diphthong",t:"vowel",n:"双元音",eg:["now","house","mouth"],sentence:"Now get out of the house.",art:"大开口起音，迅速滑向圆唇 /ʊ/。",err:"别发成中文'奥'——开头要更大更开。",clip:16},
-  {s:"/ɪə/",g:"diphthong",t:"vowel",n:"双元音",eg:["ear","near","idea"],sentence:"Can you hear me clearly here?",art:"从 /ɪ/ 滑向 /ə/，由紧到松。",err:"别发成一个音——要听得出过渡。",clip:17},
-  {s:"/eə/",g:"diphthong",t:"vowel",n:"双元音",eg:["air","care","where"],sentence:"Take care of the air there.",art:"从 /e/ 滑向 /ə/，嘴由半开到放松。",err:"很多口音中这个音正在消失。",clip:18},
-  {s:"/ʊə/",g:"diphthong",t:"vowel",n:"双元音",eg:["tour","poor","sure"],sentence:"The tour was poor but sure.",art:"从 /ʊ/ 滑向 /ə/，圆唇快速放松。",err:"现代英语中常被 /ɔ:/ 替代。",clip:19},
-  {s:"/p/",g:"voiceless",t:"consonant",n:"清辅音",eg:["pen","cap","happy"],sentence:"Please pick up the happy puppy.",art:"双唇闭合，气流憋住后突然释放。声带不振动。",err:"不要发成中文'泼'——后面没有元音。",clip:20},
-  {s:"/b/",g:"voiced",t:"consonant",n:"浊辅音",eg:["boy","cab","baby"],sentence:"The baby boy loves the blue ball.",art:"动作同 /p/，但声带振动。",err:"别发成中文'波'——后面不能再带元音。",clip:21},
-  {s:"/t/",g:"voiceless",t:"consonant",n:"清辅音",eg:["tea","cat","city"],sentence:"Tom took the train to the city.",art:"舌尖抵上齿龈，憋气后弹开。声带不振动。",err:"别发成中文'特'——舌头弹开要干脆。",clip:22},
-  {s:"/d/",g:"voiced",t:"consonant",n:"浊辅音",eg:["day","red","ready"],sentence:"David had a good day today.",art:"动作同 /t/，但声带振动。",err:"词尾别吞——'bad' vs 'bat'。",clip:23},
-  {s:"/k/",g:"voiceless",t:"consonant",n:"清辅音",eg:["key","back","school"],sentence:"Keep the black cat in the school.",art:"舌后部抵软腭，憋气后释放。声带不振动。",err:"别发成中文'科'——后面没有元音。",clip:24},
-  {s:"/ɡ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["go","bag","again"],sentence:"Give the big dog a good hug.",art:"动作同 /k/，但声带振动。",err:"词尾别吞——'bag' 不是 'ba'。",clip:25},
-  {s:"/f/",g:"voiceless",t:"consonant",n:"清辅音",eg:["fan","life","coffee"],sentence:"The fine coffee is for the family.",art:"上齿轻咬下唇，气流从缝隙中摩擦通过。",err:"别咬太紧——只是轻碰。",clip:26},
-  {s:"/v/",g:"voiced",t:"consonant",n:"浊辅音",eg:["very","give","seven"],sentence:"I love the very clever movie.",art:"动作同 /f/，但声带振动。",err:"中国人常发成 /w/——'very' 不是 'wery'！",clip:27},
-  {s:"/θ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["think","bath","three"],sentence:"I think three thanks is enough.",art:"舌尖轻轻放在上下齿之间，气流摩擦通过。",err:"别发成 /s/！'think' 不是 'sink'。舌尖在牙缝间！",clip:28},
-  {s:"/ð/",g:"voiced",t:"consonant",n:"浊辅音",eg:["this","mother","they"],sentence:"This is their mother's clothes.",art:"动作同 /θ/，但声带振动。",err:"别发成 /d/ 或 /z/——'this' 不是 'dis'。",clip:29},
-  {s:"/s/",g:"voiceless",t:"consonant",n:"清辅音",eg:["see","bus","city"],sentence:"She sees six small cats in the city.",art:"舌尖靠近上齿龈但不碰到，气流从窄缝中通过。",err:"不要发成中文'丝'——英语 s 舌尖更靠后。",clip:30},
-  {s:"/z/",g:"voiced",t:"consonant",n:"浊辅音",eg:["zoo","rose","busy"],sentence:"The busy bees buzz in the zoo.",art:"动作同 /s/，但声带振动。",err:"词尾 /z/ 要振动——'is' 不是 'iss'。",clip:31},
-  {s:"/ʃ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["she","fish","nation"],sentence:"She sells fresh fish in the shop.",art:"嘴唇微圆略突，舌面抬起靠近硬腭。",err:"嘴唇一定要圆！'she' 不是 'see'。",clip:32},
-  {s:"/ʒ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["vision","measure","garage"],sentence:"The treasure was a great pleasure.",art:"动作同 /ʃ/，但声带振动。",err:"声带一定要振动——像汉语'日'但嘴更圆。",clip:33},
-  {s:"/r/",g:"voiced",t:"consonant",n:"浊辅音",eg:["red","right","around"],sentence:"The red rose is right around the corner.",art:"舌尖上卷或后缩，不要碰到上颚。嘴唇略圆。",err:"不要发成中文'日'——舌尖不能碰到上颚，要悬空卷起。",clip:34},
-  {s:"/h/",g:"voiceless",t:"consonant",n:"清辅音",eg:["he","home","behind"],sentence:"He has a happy home behind the hill.",art:"喉部送气，口型跟随后面的元音变化。",err:"不要太用力——英语 /h/ 很轻。",clip:35},
-  {s:"/tʃ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["chair","watch","teacher"],sentence:"The teacher chose a cheap chair.",art:"舌尖抵上齿龈然后释放时带出摩擦。",err:"别发成中文'吃'——英语更短更干脆。",clip:36},
-  {s:"/dʒ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["job","age","orange"],sentence:"John just got a new job in June.",art:"动作同 /tʃ/，但声带振动。",err:"注意声带振动——手摸喉咙验证。",clip:37},
-  {s:"/tr/",g:"voiceless",t:"consonant",n:"清辅音",eg:["tree","train","try"],sentence:"Try to travel by train.",art:"/t/ 后立刻接 /r/，像是一个连贯的音。",err:"不要拆成't-rain'两个音。",clip:38},
-  {s:"/dr/",g:"voiced",t:"consonant",n:"浊辅音",eg:["dream","drive","drink"],sentence:"I dream of driving and drinking tea.",art:"/d/ 后立刻接 /r/，声带振动。",err:"和 /tr/ 区别是声带有无振动。",clip:39},
-  {s:"/ts/",g:"voiceless",t:"consonant",n:"清辅音",eg:["cats","gets","lights"],sentence:"The cats get lots of lights.",art:"/t/ 和 /s/ 连续释放。常见于复数词尾。",err:"不要拆成两个独立的音。",clip:40},
-  {s:"/dz/",g:"voiced",t:"consonant",n:"浊辅音",eg:["beds","cards","friends"],sentence:"My friends put cards on the beds.",art:"/d/ 和 /z/ 连续释放，声带振动。",err:"词尾别吞——'beds' 要有 /dz/ 收尾。",clip:41},
-  {s:"/m/",g:"voiced",t:"consonant",n:"鼻音",eg:["man","home","summer"],sentence:"My mom made some more money.",art:"双唇闭合，软腭下降，声音从鼻腔出来。",err:"嘴唇要闭严——气流不能从嘴里漏。",clip:42},
-  {s:"/n/",g:"voiced",t:"consonant",n:"鼻音",eg:["no","ten","dinner"],sentence:"No one knew the new name.",art:"舌尖抵上齿龈，嘴微张，声音从鼻腔出来。",err:"舌尖必须到位——顶住上齿龈。",clip:43},
-  {s:"/ŋ/",g:"voiced",t:"consonant",n:"鼻音",eg:["sing","long","English"],sentence:"The king is singing a long song.",art:"舌后部抬起抵软腭，声音从鼻腔出。",err:"不要在 /ŋ/ 后面再加 /ɡ/——'sing' 不是 'sing-g'。",clip:44},
-  {s:"/l/",g:"voiced",t:"consonant",n:"舌侧音",eg:["light","milk","hello"],sentence:"Let the little girl look at the light.",art:"舌尖抵上齿龈，气流从舌头两侧通过。",err:"词尾 dark l 舌后部也要抬起。",clip:45},
-  {s:"/j/",g:"voiced",t:"consonant",n:"半元音",eg:["yes","you","yellow"],sentence:"Yes, you used the yellow one yesterday.",art:"舌前部抬高接近硬腭，然后迅速滑向后面的元音。",err:"不要发成中文'耶'——英语更轻更短。",clip:46},
-  {s:"/w/",g:"voiced",t:"consonant",n:"半元音",eg:["we","water","quick"],sentence:"We want warm water in the winter.",art:"双唇收圆、前突，然后迅速打开滑向后面的元音。",err:"别发成 /v/！'we' 不是 'vee'。",clip:47},
+  {s:"/i:/",g:"monophthong",t:"vowel",n:"长元音",eg:["see","tea","meet"],sentence:"She sees the sea on the beach.",art:"舌前部抬高靠近硬腭，嘴角用力向两边拉开，声音拉长。",err:"别发成中文'衣'——嘴角要拉得更开，舌位更高。",vt:79},
+  {s:"/ɪ/",g:"monophthong",t:"vowel",n:"短元音",eg:["sit","big","fish"],sentence:"Sit in the big city.",art:"比 /i:/ 稍低稍松，嘴角微咧但不拉太开。短促有力。",err:"别和 /i:/ 搞混——sheep是羊，ship是船，嘴松一点就对了。",vt:118},
+  {s:"/e/",g:"monophthong",t:"vowel",n:"短元音",eg:["bed","head","pen"],sentence:"Let me get a red pen.",art:"嘴半张开，舌尖轻触下齿。声音短促。",err:"不要发成中文'爱'——嘴巴不要张太大，声音要干脆。",vt:148},
+  {s:"/æ/",g:"monophthong",t:"vowel",n:"短元音",eg:["cat","map","bad"],sentence:"The black cat sat on the mat.",art:"嘴张大！下颚下沉，舌前部抬起。是所有前元音里开口最大的。",err:"很多中国人发成 /e/——要把嘴张大到能塞两根手指。",vt:178},
+  {s:"/ɑ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["car","father","park"],sentence:"My father parked the car far away.",art:"口腔完全打开，舌位放到最低，声音拉长。",err:"美式常带 r 色彩，英式不卷舌。",vt:207},
+  {s:"/ɒ/",g:"monophthong",t:"vowel",n:"短元音",eg:["hot","dog","box"],sentence:"The hot dog is in the box.",art:"嘴唇收圆，舌后部抬起，声音短促。",err:"美式里这个音常变成 /ɑ:/。",vt:237},
+  {s:"/ɔ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["law","talk","more"],sentence:"I saw more laws on the door.",art:"双唇充分收圆，像吹口哨的嘴型。声音拉长。",err:"别发成 /ɒ/ 拉长版——嘴要更圆更紧。",vt:257},
+  {s:"/ʊ/",g:"monophthong",t:"vowel",n:"短元音",eg:["book","good","put"],sentence:"Put the good book here.",art:"嘴唇微圆、放松，舌后部微抬。短而轻。",err:"不是中文乌——嘴唇没那么圆。",vt:276},
+  {s:"/u:/",g:"monophthong",t:"vowel",n:"长元音",eg:["food","blue","moon"],sentence:"The blue moon is cool.",art:"双唇用力收圆、向前突出。舌后部充分抬高。",err:"别发成中文乌——嘴唇要更前突更圆。",vt:306},
+  {s:"/ʌ/",g:"monophthong",t:"vowel",n:"短元音",eg:["cup","sun","love"],sentence:"I love the sunny cup.",art:"嘴自然张开，舌中部微抬。短促有力。",err:"不要发成中文啊——嘴不要张太大。",vt:326},
+  {s:"/ɜ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["bird","word","learn"],sentence:"The bird learned a new word.",art:"舌中部抬起，口型稳定。英式不卷舌。",err:"英式不要卷舌，舌尖不要碰到上颚。",vt:356},
+  {s:"/ə/",g:"monophthong",t:"vowel",n:"弱读音",eg:["about","teacher","sofa"],sentence:"The teacher is about to arrive.",art:"全身最放松的音！嘴微张，舌自然平放。",err:"出现在非重读音节——如 banana 首尾的 a。",vt:395},
+  {s:"/eɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["day","name","take"],sentence:"Take the train today.",art:"从 /e/ 滑向 /ɪ/。前半段嘴半开，后半段嘴收小。",err:"别发成中文诶——要有滑动过程，前重后轻。",vt:425},
+  {s:"/aɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["time","my","like"],sentence:"I like my time alone.",art:"从大开口滑向 /ɪ/。前半张嘴张大，后半段迅速收拢。",err:"别发成中文爱——开头嘴要更大。",vt:455},
+  {s:"/ɔɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["boy","coin","voice"],sentence:"The boy's voice is full of joy.",art:"从圆唇滑向 /ɪ/，嘴唇由圆变扁，一气呵成。",err:"不要断成哦-衣两拍。",vt:484},
+  {s:"/əʊ/",g:"diphthong",t:"vowel",n:"双元音",eg:["go","home","boat"],sentence:"Go home on the old boat.",art:"从 /ə/ 滑向 /ʊ/，嘴唇由微开到圆。",err:"别发成中文欧——英语有滑动过程。",vt:504},
+  {s:"/aʊ/",g:"diphthong",t:"vowel",n:"双元音",eg:["now","house","mouth"],sentence:"Now get out of the house.",art:"大开口起音，迅速滑向圆唇 /ʊ/。",err:"别发成中文奥——开头要更大更开。",vt:534},
+  {s:"/ɪə/",g:"diphthong",t:"vowel",n:"双元音",eg:["ear","near","idea"],sentence:"Can you hear me clearly here?",art:"从 /ɪ/ 滑向 /ə/，由紧到松。",err:"别发成一个音——要听得出过渡。",vt:553},
+  {s:"/eə/",g:"diphthong",t:"vowel",n:"双元音",eg:["air","care","where"],sentence:"Take care of the air there.",art:"从 /e/ 滑向 /ə/，嘴由半开到放松。",err:"很多口音中这个音正在消失。",vt:573},
+  {s:"/ʊə/",g:"diphthong",t:"vowel",n:"双元音",eg:["tour","poor","sure"],sentence:"The tour was poor but sure.",art:"从 /ʊ/ 滑向 /ə/，圆唇快速放松。",err:"现代英语中常被 /ɔ:/ 替代。",vt:603},
+  {s:"/p/",g:"voiceless",t:"consonant",n:"清辅音",eg:["pen","cap","happy"],sentence:"Please pick up the happy puppy.",art:"双唇闭合，气流憋住后突然释放。声带不振动。",err:"不要发成中文泼——后面没有元音。",vt:623},
+  {s:"/b/",g:"voiced",t:"consonant",n:"浊辅音",eg:["boy","cab","baby"],sentence:"The baby boy loves the blue ball.",art:"动作同 /p/，但声带振动。",err:"别发成中文波——后面不能再带元音。",vt:642},
+  {s:"/t/",g:"voiceless",t:"consonant",n:"清辅音",eg:["tea","cat","city"],sentence:"Tom took the train to the city.",art:"舌尖抵上齿龈，憋气后弹开。声带不振动。",err:"别发成中文特——舌头弹开要干脆。",vt:662},
+  {s:"/d/",g:"voiced",t:"consonant",n:"浊辅音",eg:["day","red","ready"],sentence:"David had a good day today.",art:"动作同 /t/，但声带振动。",err:"词尾别吞——bad vs bat。",vt:682},
+  {s:"/k/",g:"voiceless",t:"consonant",n:"清辅音",eg:["key","back","school"],sentence:"Keep the black cat in the school.",art:"舌后部抵软腭，憋气后释放。声带不振动。",err:"别发成中文科——后面没有元音。",vt:702},
+  {s:"/ɡ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["go","bag","again"],sentence:"Give the big dog a good hug.",art:"动作同 /k/，但声带振动。",err:"词尾别吞——bag 不是 ba。",vt:731},
+  {s:"/f/",g:"voiceless",t:"consonant",n:"清辅音",eg:["fan","life","coffee"],sentence:"The fine coffee is for the family.",art:"上齿轻咬下唇，气流从缝隙中摩擦通过。",err:"别咬太紧——只是轻碰。",vt:761},
+  {s:"/v/",g:"voiced",t:"consonant",n:"浊辅音",eg:["very","give","seven"],sentence:"I love the very clever movie.",art:"动作同 /f/，但声带振动。",err:"中国人常发成 /w/——very 不是 wery！",vt:781},
+  {s:"/θ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["think","bath","three"],sentence:"I think three thanks is enough.",art:"舌尖轻轻放在上下齿之间，气流摩擦通过。",err:"别发成 /s/！think 不是 sink。舌尖在牙缝间！",vt:801},
+  {s:"/ð/",g:"voiced",t:"consonant",n:"浊辅音",eg:["this","mother","they"],sentence:"This is their mother's clothes.",art:"动作同 /θ/，但声带振动。",err:"别发成 /d/ 或 /z/——this 不是 dis。",vt:830},
+  {s:"/s/",g:"voiceless",t:"consonant",n:"清辅音",eg:["see","bus","city"],sentence:"She sees six small cats in the city.",art:"舌尖靠近上齿龈但不碰到，气流从窄缝中通过。",err:"不要发成中文丝——英语 s 舌尖更靠后。",vt:880},
+  {s:"/z/",g:"voiced",t:"consonant",n:"浊辅音",eg:["zoo","rose","busy"],sentence:"The busy bees buzz in the zoo.",art:"动作同 /s/，但声带振动。",err:"词尾 /z/ 要振动——is 不是 iss。",vt:929},
+  {s:"/ʃ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["she","fish","nation"],sentence:"She sells fresh fish in the shop.",art:"嘴唇微圆略突，舌面抬起靠近硬腭。",err:"嘴唇一定要圆！she 不是 see。",vt:959},
+  {s:"/ʒ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["vision","measure","garage"],sentence:"The treasure was a great pleasure.",art:"动作同 /ʃ/，但声带振动。",err:"声带一定要振动——像汉语日但嘴更圆。",vt:1008},
+  {s:"/r/",g:"voiced",t:"consonant",n:"浊辅音",eg:["red","right","around"],sentence:"The red rose is right around the corner.",art:"舌尖上卷或后缩，不要碰到上颚。嘴唇略圆。",err:"不要发成中文日——舌尖不能碰到上颚，要悬空卷起。",vt:1030},
+  {s:"/h/",g:"voiceless",t:"consonant",n:"清辅音",eg:["he","home","behind"],sentence:"He has a happy home behind the hill.",art:"喉部送气，口型跟随后面的元音变化。",err:"不要太用力——英语 /h/ 很轻。",vt:1048},
+  {s:"/tʃ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["chair","watch","teacher"],sentence:"The teacher chose a cheap chair.",art:"舌尖抵上齿龈然后释放时带出摩擦。",err:"别发成中文吃——英语更短更干脆。",vt:1068},
+  {s:"/dʒ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["job","age","orange"],sentence:"John just got a new job in June.",art:"动作同 /tʃ/，但声带振动。",err:"注意声带振动——手摸喉咙验证。",vt:1117},
+  {s:"/tr/",g:"voiceless",t:"consonant",n:"清辅音",eg:["tree","train","try"],sentence:"Try to travel by train.",art:"/t/ 后立刻接 /r/，像是一个连贯的音。",err:"不要拆成 t-rain 两个音。",vt:1147},
+  {s:"/dr/",g:"voiced",t:"consonant",n:"浊辅音",eg:["dream","drive","drink"],sentence:"I dream of driving and drinking tea.",art:"/d/ 后立刻接 /r/，声带振动。",err:"和 /tr/ 区别是声带有无振动。",vt:1177},
+  {s:"/ts/",g:"voiceless",t:"consonant",n:"清辅音",eg:["cats","gets","lights"],sentence:"The cats get lots of lights.",art:"/t/ 和 /s/ 连续释放。常见于复数词尾。",err:"不要拆成两个独立的音。",vt:1196},
+  {s:"/dz/",g:"voiced",t:"consonant",n:"浊辅音",eg:["beds","cards","friends"],sentence:"My friends put cards on the beds.",art:"/d/ 和 /z/ 连续释放，声带振动。",err:"词尾别吞——beds 要有 /dz/ 收尾。",vt:1226},
+  {s:"/m/",g:"voiced",t:"consonant",n:"鼻音",eg:["man","home","summer"],sentence:"My mom made some more money.",art:"双唇闭合，软腭下降，声音从鼻腔出来。",err:"嘴唇要闭严——气流不能从嘴里漏。",vt:1266},
+  {s:"/n/",g:"voiced",t:"consonant",n:"鼻音",eg:["no","ten","dinner"],sentence:"No one knew the new name.",art:"舌尖抵上齿龈，嘴微张，声音从鼻腔出来。",err:"舌尖必须到位——顶住上齿龈。",vt:1285},
+  {s:"/ŋ/",g:"voiced",t:"consonant",n:"鼻音",eg:["sing","long","English"],sentence:"The king is singing a long song.",art:"舌后部抬起抵软腭，声音从鼻腔出。",err:"不要在 /ŋ/ 后面再加 /ɡ/——sing 不是 sing-g。",vt:1305},
+  {s:"/l/",g:"voiced",t:"consonant",n:"舌侧音",eg:["light","milk","hello"],sentence:"Let the little girl look at the light.",art:"舌尖抵上齿龈，气流从舌头两侧通过。",err:"词尾 dark l 舌后部也要抬起。",vt:1335},
+  {s:"/j/",g:"voiced",t:"consonant",n:"半元音",eg:["yes","you","yellow"],sentence:"Yes, you used the yellow one yesterday.",art:"舌前部抬高接近硬腭，然后迅速滑向后面的元音。",err:"不要发成中文耶——英语更轻更短。",vt:1384},
+  {s:"/w/",g:"voiced",t:"consonant",n:"半元音",eg:["we","water","quick"],sentence:"We want warm water in the winter.",art:"双唇收圆、前突，然后迅速打开滑向后面的元音。",err:"别发成 /v/！we 不是 vee。",vt:1414},
 ];
 
-const S={filter:'all',search:'',expandedIdx:-1,learned:new Set(JSON.parse(localStorage.getItem('ph48learned')||'[]')),mistakes:JSON.parse(localStorage.getItem('ph48mistakes')||'[]'),score:+localStorage.getItem('ph48score')||0,quizQ:null,quizDone:false,mr:null,chunks:[],audioURL:null,activeVideo:null};
+const S={filter:'all',search:'',expandedIdx:-1,timeOffsets:{},learned:new Set(JSON.parse(localStorage.getItem('ph48learned')||'[]')),mistakes:JSON.parse(localStorage.getItem('ph48mistakes')||'[]'),score:+localStorage.getItem('ph48score')||0,quizQ:null,quizDone:false,mr:null,chunks:[],audioURL:null};
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem('ph48learned',JSON.stringify([...S.learned]));localStorage.setItem('ph48mistakes',JSON.stringify(S.mistakes));localStorage.setItem('ph48score',String(S.score))}
 function speak(t){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.82;speechSynthesis.speak(u)}
-function clipSrc(i){return'clips/'+String(i).padStart(2,'0')+'.mp4'}
+function fmt(s){const m=Math.floor(s/60),sec=s%60;return`${m}:${String(sec).padStart(2,'0')}`}
+function getTime(idx){const p=phonemes[idx];return Math.max(0,p.vt+(S.timeOffsets[idx]||0))}
 
 function visible(){const q=S.search.trim().toLowerCase();return phonemes.filter(p=>(S.filter==='all'||p.g===S.filter)&&(!q||[p.s,p.n,p.err,p.sentence,...p.eg].join(' ').toLowerCase().includes(q)))}
 
 function cardHTML(p){
-  const i=phonemes.indexOf(p),exp=S.expandedIdx===i;
+  const i=phonemes.indexOf(p),exp=S.expandedIdx===i,off=S.timeOffsets[i]||0,t=getTime(i);
   return`<div class="card${exp?' expanded':''}" data-idx="${i}">
     <span class="tag ${p.t}">${p.n}</span>
     <div class="sym">${p.s}</div>
@@ -199,7 +203,13 @@ function cardHTML(p){
     <div class="detail">
       <div class="big-sym">${p.s}</div>
       <div class="sentence">${p.sentence}<small>例词: ${p.eg.join(' · ')}</small></div>
-      <video class="clip-video" src="${clipSrc(p.clip)}" controls playsinline preload="none" data-idx="${i}"></video>
+      <div class="vid-row">
+        <button data-act="vidplay" data-idx="${i}">▶ 播视频</button>
+        <button data-act="vidback" data-idx="${i}">-5s</button>
+        <button data-act="vidfwd" data-idx="${i}">+5s</button>
+        <span class="ts-label">⏱ ${fmt(t)}${off?' (±'+off+'s)':''}</span>
+      </div>
+      <video class="detail-vid" data-idx="${i}" src="video.mp4#t=${t}" controls playsinline preload="none" style="display:block"></video>
       <div class="practice-row">
         <button class="btn-listen" data-act="listen" data-idx="${i}">🔊 标准音</button>
         <button class="btn-record" data-act="record" data-idx="${i}">🎙 录音</button>
@@ -223,6 +233,11 @@ function updateCards(){
 }
 
 function updateStats(){$('learnedN').textContent=S.learned.size;$('scoreN').textContent=S.score;$('mistakeN').textContent=S.mistakes.length}
+
+function getVideo(idx){return document.querySelector(`video.detail-vid[data-idx="${idx}"]`)}
+function seekVideo(idx){const v=getVideo(idx);if(!v)return;v.currentTime=getTime(idx);v.play().catch(()=>{})}
+function adjustTime(idx,delta){S.timeOffsets[idx]=(S.timeOffsets[idx]||0)+delta;const v=getVideo(idx);if(v){const t=getTime(idx);v.currentTime=t;updateCards();const el=document.querySelector(`.ts-label[data-idx]`);}}
+function updateTimeLabel(idx){const el=document.querySelector(`.card[data-idx="${idx}"] .ts-label`);if(el)el.textContent='⏱ '+fmt(getTime(idx));}
 
 // Recording
 async function toggleRecord(idx){
@@ -270,7 +285,10 @@ document.addEventListener('click',e=>{
   if(btn.dataset.filter!==undefined){S.filter=btn.dataset.filter;document.querySelectorAll('.filters button').forEach(b=>b.classList.toggle('active',b.dataset.filter===S.filter));S.expandedIdx=-1;updateCards();return}
   if(idx!=null){
     if(btn.dataset.act==='speak')speak(phonemes[idx].eg[0]);
-    if(btn.dataset.act==='expand'){const wasExp=S.expandedIdx===idx;S.expandedIdx=wasExp?-1:idx;updateCards();if(!wasExp)setTimeout(()=>{const c=document.querySelector(`.card[data-idx="${idx}"]`);if(c)c.scrollIntoView({behavior:'smooth',block:'center'});const v=c?.querySelector('video');if(v)v.play().catch(()=>{})},200)}
+    if(btn.dataset.act==='expand'){const wasExp=S.expandedIdx===idx;S.expandedIdx=wasExp?-1:idx;updateCards();if(!wasExp)setTimeout(()=>{const c=document.querySelector(`.card[data-idx="${idx}"]`);if(c)c.scrollIntoView({behavior:'smooth',block:'center'});seekVideo(idx)},300)}
+    if(btn.dataset.act==='vidplay')seekVideo(idx);
+    if(btn.dataset.act==='vidback'){adjustTime(idx,-5);updateCards()}
+    if(btn.dataset.act==='vidfwd'){adjustTime(idx,5);updateCards()}
     if(btn.dataset.act==='learn'){if(S.learned.has(phonemes[idx].s))S.learned.delete(phonemes[idx].s);else S.learned.add(phonemes[idx].s);save();updateStats();updateCards()}
     if(btn.dataset.act==='listen'){speak(phonemes[idx].sentence);setTimeout(()=>speak(phonemes[idx].eg[0]),2500)}
     if(btn.dataset.act==='record')toggleRecord(idx);
@@ -286,7 +304,7 @@ document.addEventListener('click',e=>{
 });
 
 $('search').addEventListener('input',e=>{S.search=e.target.value;S.expandedIdx=-1;updateCards()});
-updateStats();updateCards();if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+updateStats();updateCards();
 </script>
 </body>
 </html>
