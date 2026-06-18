@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>48音标跟练</title>
+<style>
+:root{--bg:#f6f7f2;--ink:#202426;--mu:#667071;--ln:#d8ded6;--pn:#fff;--ac:#0f766e;--a2:#c2410c;--a3:#4f46e5;--gd:#15803d;--bd:#b91c1c}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.5}
+button,input{font:inherit}
+.app{max-width:800px;margin:0 auto;min-height:100vh}
+header{padding:8px 12px;background:var(--pn);border-bottom:1px solid var(--ln);position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:6px}
+header h1{font-size:17px;margin:0;flex:1}
+header button{min-height:30px;padding:4px 10px;border:1px solid var(--ln);border-radius:6px;background:var(--pn);cursor:pointer;font-size:11px}
+header button.accent{background:var(--ac);color:#fff;border-color:var(--ac)}
+.stat-bar{display:flex;gap:4px;padding:5px 10px;background:#fbfcf8;border-bottom:1px solid var(--ln);font-size:11px;color:var(--mu);overflow-x:auto}
+.stat-bar span{margin-right:10px;white-space:nowrap}.stat-bar b{color:var(--ink)}
+.filters{display:flex;gap:4px;padding:6px 10px;flex-wrap:wrap;border-bottom:1px solid var(--ln);background:var(--pn)}
+.filters button{padding:4px 10px;border:1px solid var(--ln);border-radius:999px;background:var(--pn);cursor:pointer;font-size:11px;white-space:nowrap}
+.filters button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.filters button .cnt{font-size:9px;opacity:.7}
+.search-wrap{padding:6px 10px;background:var(--pn);border-bottom:1px solid var(--ln)}
+.search{width:100%;padding:7px 10px;border:1px solid var(--ln);border-radius:6px;background:#fff;font-size:14px}
+main{padding:6px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:5px}
+.card{padding:8px;background:var(--pn);border:1px solid var(--ln);border-radius:6px;cursor:pointer;transition:transform .1s,box-shadow .1s}
+.card:active{transform:scale(.97)}
+.card.expanded{border-color:var(--ac);box-shadow:0 0 0 3px rgba(15,118,110,.15);grid-column:1/-1}
+.card .sym{font-size:26px;font-weight:750;line-height:1.1}
+.card .tag{display:inline-block;padding:2px 4px;border-radius:999px;color:#fff;font-size:9px;margin-bottom:2px}
+.card .tag.vowel{background:var(--ac)}.card .tag.consonant{background:var(--a2)}
+.card .eg{font-size:11px;color:var(--mu);margin:2px 0}
+.card .tip{font-size:10px;background:#f0f4ef;padding:3px;border-radius:4px}
+.card .acts{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
+.card .acts button{min-height:24px;padding:2px 7px;font-size:10px;border:1px solid var(--ln);border-radius:4px;background:var(--pn);cursor:pointer}
+.detail{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--ln)}
+.card.expanded .detail{display:block}
+.detail .big-sym{font-size:56px;font-weight:850;text-align:center;line-height:1}
+.detail .sentence{text-align:center;font-size:15px;color:var(--ac);margin:4px 0}
+.detail .sentence small{display:block;font-size:11px;color:var(--mu)}
+.detail .pr-row{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.detail .pr-row button{min-height:36px;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:3px;border:0}
+.btn-listen{background:var(--a3);color:#fff}.btn-record{background:var(--bd);color:#fff}
+.btn-record.recording{animation:pulse .8s infinite}
+.btn-play{background:var(--ac);color:#fff}.btn-compare{background:var(--a2);color:#fff}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.detail .rc-st{text-align:center;font-size:12px;min-height:18px}
+.detail .fb{text-align:center;padding:6px;border-radius:6px;margin:4px 0;font-size:12px;display:none}
+.detail .fb.good{background:#e8f5ec;color:var(--gd);display:block}
+.detail .fb.retry{background:#fff3cd;color:#856404;display:block}
+.detail .info-box{background:#f0f4ef;padding:6px;border-radius:6px;margin-top:4px}
+.detail .info-box h4{font-size:11px;margin:0 0 2px;color:var(--ac)}
+.detail .info-box p{font-size:11px;margin:0}
+.detail .info-box.warn{background:#fff3cd}.detail .info-box.warn h4{color:var(--a2)}
+.qp{display:none;padding:12px;background:var(--pn);border-bottom:1px solid var(--ln)}
+.qp.open{display:block}
+.qp .qs{font-size:48px;font-weight:800;text-align:center}
+.qp .qr{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:6px 0}
+.qp .qr button{padding:8px 12px;border:1px solid var(--ln);border-radius:6px;background:var(--pn);cursor:pointer;font-size:13px;min-width:90px}
+.qp .qr button.correct{border-color:var(--gd);background:#e8f5ec}
+.qp .qr button.wrong{border-color:var(--bd);background:#fae8e8}
+.qp .qf{text-align:center;min-height:20px;font-weight:650;font-size:13px}
+.empty{padding:24px;text-align:center;color:var(--mu)}
+@media(min-width:600px){.cards{grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:7px}.detail .big-sym{font-size:72px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><h1>🗣 48音标跟练</h1><button id="bq" class="accent">✏️测验</button></header>
+<div class="qp" id="qp">
+<div class="qs" id="qs">/i:/</div>
+<button id="qsp" style="display:block;margin:3px auto;padding:4px 10px;border:1px solid var(--ln);border-radius:6px;background:var(--pn);cursor:pointer;font-size:11px">🔊听</button>
+<div class="qr" id="qr"></div>
+<div class="qf" id="qf"></div>
+<button id="qn" style="display:block;margin:5px auto;padding:7px 18px;background:var(--ac);color:#fff;border:0;border-radius:6px;cursor:pointer;font-size:13px">下一题▶</button>
+<button id="qc" style="display:block;margin:3px auto;padding:3px 10px;border:0;background:transparent;color:var(--mu);cursor:pointer;font-size:11px">关闭</button>
+</div>
+<div class="stat-bar"><span>已掌握<b id="ln">0</b></span><span>答对<b id="sn">0</b></span><span>错题<b id="mn">0</b></span></div>
+<div class="filters">
+<button class="active" data-f="all">全部<span class="cnt">48</span></button>
+<button data-f="monophthong">单元音<span class="cnt">12</span></button>
+<button data-f="diphthong">双元音<span class="cnt">8</span></button>
+<button data-f="voiceless">清辅音<span class="cnt">16</span></button>
+<button data-f="voiced">浊辅音<span class="cnt">12</span></button>
+</div>
+<div class="search-wrap"><input class="search" id="s" placeholder="搜索音标、例词…"></div>
+<main><div class="cards" id="cd"></div></main>
+</div>
+<audio id="ma" hidden></audio>
+<script>
+const P=[{s:"/i:/",g:"monophthong",t:"vowel",n:"长元音",eg:["see","tea","meet"],se:"She sees the sea on the beach.",ar:"舌前部抬高靠近硬腭，嘴角用力向两边拉开，声音拉长。",er:"别发成中文衣——嘴角要拉得更开，舌位更高。"},{s:"/ɪ/",g:"monophthong",t:"vowel",n:"短元音",eg:["sit","big","fish"],se:"Sit in the big city.",ar:"比 /i:/ 稍低稍松，嘴角微咧但不拉太开。短促有力。",er:"别和 /i:/ 搞混——sheep是羊，ship是船，嘴松一点就对了。"},{s:"/e/",g:"monophthong",t:"vowel",n:"短元音",eg:["bed","head","pen"],se:"Let me get a red pen.",ar:"嘴半张开，舌尖轻触下齿。声音短促。",er:"不要发成中文爱——嘴巴不要张太大。"},{s:"/æ/",g:"monophthong",t:"vowel",n:"短元音",eg:["cat","map","bad"],se:"The black cat sat on the mat.",ar:"嘴张大！下颚下沉，舌前部抬起。是所有前元音里开口最大的。",er:"很多中国人发成 /e/——要把嘴张大。"},{s:"/ɑ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["car","father","park"],se:"My father parked the car far away.",ar:"口腔完全打开，舌位放到最低，声音拉长。",er:"美式常带 r 色彩，英式不卷舌。"},{s:"/ɒ/",g:"monophthong",t:"vowel",n:"短元音",eg:["hot","dog","box"],se:"The hot dog is in the box.",ar:"嘴唇收圆，舌后部抬起，声音短促。",er:"美式里这个音常变成 /ɑ:/。"},{s:"/ɔ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["law","talk","more"],se:"I saw more laws on the door.",ar:"双唇充分收圆，像吹口哨的嘴型。声音拉长。",er:"别发成 /ɒ/ 拉长版——嘴要更圆更紧。"},{s:"/ʊ/",g:"monophthong",t:"vowel",n:"短元音",eg:["book","good","put"],se:"Put the good book here.",ar:"嘴唇微圆、放松，舌后部微抬。短而轻。",er:"不是中文乌——嘴唇没那么圆。"},{s:"/u:/",g:"monophthong",t:"vowel",n:"长元音",eg:["food","blue","moon"],se:"The blue moon is cool.",ar:"双唇用力收圆、向前突出。舌后部充分抬高。",er:"别发成中文乌——嘴唇要更前突更圆。"},{s:"/ʌ/",g:"monophthong",t:"vowel",n:"短元音",eg:["cup","sun","love"],se:"I love the sunny cup.",ar:"嘴自然张开，舌中部微抬。短促有力。",er:"不要发成中文啊——嘴不要张太大。"},{s:"/ɜ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["bird","word","learn"],se:"The bird learned a new word.",ar:"舌中部抬起，口型稳定。英式不卷舌。",er:"英式不要卷舌，舌尖不要碰到上颚。"},{s:"/ə/",g:"monophthong",t:"vowel",n:"弱读音",eg:["about","teacher","sofa"],se:"The teacher is about to arrive.",ar:"全身最放松的音！嘴微张，舌自然平放。",er:"出现在非重读音节——如 banana 首尾的 a。"},{s:"/eɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["day","name","take"],se:"Take the train today.",ar:"从 /e/ 滑向 /ɪ/。前半段嘴半开，后半段嘴收小。",er:"别发成中文诶——要有滑动过程，前重后轻。"},{s:"/aɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["time","my","like"],se:"I like my time alone.",ar:"从大开口滑向 /ɪ/。前半张嘴张大，后半段迅速收拢。",er:"别发成中文爱——开头嘴要更大。"},{s:"/ɔɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["boy","coin","voice"],se:"The boy's voice is full of joy.",ar:"从圆唇滑向 /ɪ/，嘴唇由圆变扁，一气呵成。",er:"不要断成哦-衣两拍。"},{s:"/əʊ/",g:"diphthong",t:"vowel",n:"双元音",eg:["go","home","boat"],se:"Go home on the old boat.",ar:"从 /ə/ 滑向 /ʊ/，嘴唇由微开到圆。",er:"别发成中文欧——英语有滑动过程。"},{s:"/aʊ/",g:"diphthong",t:"vowel",n:"双元音",eg:["now","house","mouth"],se:"Now get out of the house.",ar:"大开口起音，迅速滑向圆唇 /ʊ/。",er:"别发成中文奥——开头要更大更开。"},{s:"/ɪə/",g:"diphthong",t:"vowel",n:"双元音",eg:["ear","near","idea"],se:"Can you hear me clearly here?",ar:"从 /ɪ/ 滑向 /ə/，由紧到松。",er:"别发成一个音——要听得出过渡。"},{s:"/eə/",g:"diphthong",t:"vowel",n:"双元音",eg:["air","care","where"],se:"Take care of the air there.",ar:"从 /e/ 滑向 /ə/，嘴由半开到放松。",er:"很多口音中这个音正在消失。"},{s:"/ʊə/",g:"diphthong",t:"vowel",n:"双元音",eg:["tour","poor","sure"],se:"The tour was poor but sure.",ar:"从 /ʊ/ 滑向 /ə/，圆唇快速放松。",er:"现代英语中常被 /ɔ:/ 替代。"},{s:"/p/",g:"voiceless",t:"consonant",n:"清辅音",eg:["pen","cap","happy"],se:"Please pick up the happy puppy.",ar:"双唇闭合，气流憋住后突然释放。声带不振动。",er:"不要发成中文泼——后面没有元音。"},{s:"/b/",g:"voiced",t:"consonant",n:"浊辅音",eg:["boy","cab","baby"],se:"The baby boy loves the blue ball.",ar:"动作同 /p/，但声带振动。",er:"别发成中文波——后面不能再带元音。"},{s:"/t/",g:"voiceless",t:"consonant",n:"清辅音",eg:["tea","cat","city"],se:"Tom took the train to the city.",ar:"舌尖抵上齿龈，憋气后弹开。声带不振动。",er:"别发成中文特——舌头弹开要干脆。"},{s:"/d/",g:"voiced",t:"consonant",n:"浊辅音",eg:["day","red","ready"],se:"David had a good day today.",ar:"动作同 /t/，但声带振动。",er:"词尾别吞——bad vs bat。"},{s:"/k/",g:"voiceless",t:"consonant",n:"清辅音",eg:["key","back","school"],se:"Keep the black cat in the school.",ar:"舌后部抵软腭，憋气后释放。声带不振动。",er:"别发成中文科——后面没有元音。"},{s:"/ɡ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["go","bag","again"],se:"Give the big dog a good hug.",ar:"动作同 /k/，但声带振动。",er:"词尾别吞——bag 不是 ba。"},{s:"/f/",g:"voiceless",t:"consonant",n:"清辅音",eg:["fan","life","coffee"],se:"The fine coffee is for the family.",ar:"上齿轻咬下唇，气流从缝隙中摩擦通过。",er:"别咬太紧——只是轻碰。"},{s:"/v/",g:"voiced",t:"consonant",n:"浊辅音",eg:["very","give","seven"],se:"I love the very clever movie.",ar:"动作同 /f/，但声带振动。",er:"中国人常发成 /w/——very 不是 wery！"},{s:"/θ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["think","bath","three"],se:"I think three thanks is enough.",ar:"舌尖轻轻放在上下齿之间，气流摩擦通过。",er:"别发成 /s/！think 不是 sink。舌尖在牙缝间！"},{s:"/ð/",g:"voiced",t:"consonant",n:"浊辅音",eg:["this","mother","they"],se:"This is their mother's clothes.",ar:"动作同 /θ/，但声带振动。",er:"别发成 /d/ 或 /z/——this 不是 dis。"},{s:"/s/",g:"voiceless",t:"consonant",n:"清辅音",eg:["see","bus","city"],se:"She sees six small cats in the city.",ar:"舌尖靠近上齿龈但不碰到，气流从窄缝中通过。",er:"不要发成中文丝——英语 s 舌尖更靠后。"},{s:"/z/",g:"voiced",t:"consonant",n:"浊辅音",eg:["zoo","rose","busy"],se:"The busy bees buzz in the zoo.",ar:"动作同 /s/，但声带振动。",er:"词尾 /z/ 要振动——is 不是 iss。"},{s:"/ʃ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["she","fish","nation"],se:"She sells fresh fish in the shop.",ar:"嘴唇微圆略突，舌面抬起靠近硬腭。",er:"嘴唇一定要圆！she 不是 see。"},{s:"/ʒ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["vision","measure","garage"],se:"The treasure was a great pleasure.",ar:"动作同 /ʃ/，但声带振动。",er:"声带一定要振动——像汉语日但嘴更圆。"},{s:"/r/",g:"voiced",t:"consonant",n:"浊辅音",eg:["red","right","around"],se:"The red rose is right around the corner.",ar:"舌尖上卷或后缩，不要碰到上颚。嘴唇略圆。",er:"不要发成中文日——舌尖不能碰到上颚，要悬空卷起。"},{s:"/h/",g:"voiceless",t:"consonant",n:"清辅音",eg:["he","home","behind"],se:"He has a happy home behind the hill.",ar:"喉部送气，口型跟随后面的元音变化。",er:"不要太用力——英语 /h/ 很轻。"},{s:"/tʃ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["chair","watch","teacher"],se:"The teacher chose a cheap chair.",ar:"舌尖抵上齿龈然后释放时带出摩擦。",er:"别发成中文吃——英语更短更干脆。"},{s:"/dʒ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["job","age","orange"],se:"John just got a new job in June.",ar:"动作同 /tʃ/，但声带振动。",er:"注意声带振动——手摸喉咙验证。"},{s:"/tr/",g:"voiceless",t:"consonant",n:"清辅音",eg:["tree","train","try"],se:"Try to travel by train.",ar:"/t/ 后立刻接 /r/，像是一个连贯的音。",er:"不要拆成 t-rain 两个音。"},{s:"/dr/",g:"voiced",t:"consonant",n:"浊辅音",eg:["dream","drive","drink"],se:"I dream of driving and drinking tea.",ar:"/d/ 后立刻接 /r/，声带振动。",er:"和 /tr/ 区别是声带有无振动。"},{s:"/ts/",g:"voiceless",t:"consonant",n:"清辅音",eg:["cats","gets","lights"],se:"The cats get lots of lights.",ar:"/t/ 和 /s/ 连续释放。常见于复数词尾。",er:"不要拆成两个独立的音。"},{s:"/dz/",g:"voiced",t:"consonant",n:"浊辅音",eg:["beds","cards","friends"],se:"My friends put cards on the beds.",ar:"/d/ 和 /z/ 连续释放，声带振动。",er:"词尾别吞——beds 要有 /dz/ 收尾。"},{s:"/m/",g:"voiced",t:"consonant",n:"鼻音",eg:["man","home","summer"],se:"My mom made some more money.",ar:"双唇闭合，软腭下降，声音从鼻腔出来。",er:"嘴唇要闭严——气流不能从嘴里漏。"},{s:"/n/",g:"voiced",t:"consonant",n:"鼻音",eg:["no","ten","dinner"],se:"No one knew the new name.",ar:"舌尖抵上齿龈，嘴微张，声音从鼻腔出来。",er:"舌尖必须到位——顶住上齿龈。"},{s:"/ŋ/",g:"voiced",t:"consonant",n:"鼻音",eg:["sing","long","English"],se:"The king is singing a long song.",ar:"舌后部抬起抵软腭，声音从鼻腔出。",er:"不要在 /ŋ/ 后面再加 /ɡ/——sing 不是 sing-g。"},{s:"/l/",g:"voiced",t:"consonant",n:"舌侧音",eg:["light","milk","hello"],se:"Let the little girl look at the light.",ar:"舌尖抵上齿龈，气流从舌头两侧通过。",er:"词尾 dark l 舌后部也要抬起。"},{s:"/j/",g:"voiced",t:"consonant",n:"半元音",eg:["yes","you","yellow"],se:"Yes, you used the yellow one yesterday.",ar:"舌前部抬高接近硬腭，然后迅速滑向后面的元音。",er:"不要发成中文耶——英语更轻更短。"},{s:"/w/",g:"voiced",t:"consonant",n:"半元音",eg:["we","water","quick"],se:"We want warm water in the winter.",ar:"双唇收圆、前突，然后迅速打开滑向后面的元音。",er:"别发成 /v/！we 不是 vee。"}];
+const S={fi:'all',se:'',ex:-1,le:new Set(JSON.parse(localStorage.getItem('phl')||'[]')),mi:JSON.parse(localStorage.getItem('phm')||'[]'),sc:+localStorage.getItem('phs')||0,qq:null,qd:!1,mr:null,ch:[],au:null};
+const $=id=>document.getElementById(id);
+function sv(){localStorage.setItem('phl',JSON.stringify([...S.le]));localStorage.setItem('phm',JSON.stringify(S.mi));localStorage.setItem('phs',String(S.sc))}
+function sp(t){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.82;speechSynthesis.speak(u)}
+function vi(){const q=S.se.trim().toLowerCase();return P.filter(p=>(S.fi==='all'||p.g===S.fi)&&(!q||[p.s,p.n,p.er,p.se,...p.eg].join(' ').toLowerCase().includes(q)))}
+function ch(p){const i=P.indexOf(p),ex=S.ex===i;return'<div class="card'+(ex?' expanded':'')+'" data-idx="'+i+'"><span class="tag '+p.t+'">'+p.n+'</span><div class="sym">'+p.s+'</div><div class="eg">'+p.eg.join(' · ')+'</div><div class="tip">'+p.er.substring(0,38)+'…</div><div class="acts"><button data-a="sp" data-i="'+i+'">🔊听</button><button data-a="ex" data-i="'+i+'">'+(ex?'收起':'🎤练')+'</button><button data-a="le" data-i="'+i+'">'+(S.le.has(p.s)?'✓已掌握':'标记')+'</button></div><div class="detail"><div class="big-sym">'+p.s+'</div><div class="sentence">'+p.se+'<small>例词: '+p.eg.join(' · ')+'</small></div><div class="pr-row"><button class="btn-listen" data-a="li" data-i="'+i+'">🔊标准音</button><button class="btn-record" data-a="rc" data-i="'+i+'">🎙录音</button><button class="btn-play" data-a="pm" data-i="'+i+'" disabled>▶回听</button><button class="btn-compare" data-a="cp" data-i="'+i+'" disabled>🔄对比</button></div><div class="pr-row"><button data-a="ck" data-i="'+i+'" style="background:var(--a3);color:#fff;border:0;min-height:34px;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px">🎯语音识别校验</button></div><div class="rc-st" data-i="'+i+'"></div><div class="fb" data-i="'+i+'"></div><div class="info-box"><h4>📐发音要点</h4><p>'+p.ar+'</p></div><div class="info-box warn"><h4>⚠️常见错误</h4><p>'+p.er+'</p></div></div></div>'}
+function uc(){$('cd').innerHTML=vi().map(ch).join('')||'<div class="empty">没有匹配的音标</div>'}
+function us(){$('ln').textContent=S.le.size;$('sn').textContent=S.sc;$('mn').textContent=S.mi.length}
+async function tr(i){if(S.mr&&S.mr.state==='recording'){S.mr.stop();return}S.ch=[];S.au=null;try{const st=await navigator.mediaDevices.getUserMedia({audio:!0});S.mr=new MediaRecorder(st,{mimeType:'audio/webm'});S.mr.ondataavailable=e=>{if(e.data.size>0)S.ch.push(e.data)};S.mr.onstop=()=>{st.getTracks().forEach(t=>t.stop());const b=new Blob(S.ch,{type:'audio/webm'});S.au=URL.createObjectURL(b);$('ma').src=S.au;ub(i,!0);ur(i,'✅录音完成！')};S.mr.start();ur(i,'🔴正在录音…说出例句');ub(i,null,!0)}catch(e){ur(i,'❌无法访问麦克风')}}
+function ur(i,t){const el=document.querySelector('.rc-st[data-i="'+i+'"]');if(el)el.textContent=t||''}
+function ub(i,hr,ir){const c=document.querySelector('.card[data-idx="'+i+'"]');if(!c)return;const pb=c.querySelector('[data-a="pm"]'),cb=c.querySelector('[data-a="cp"]'),rb=c.querySelector('[data-a="rc"]');if(pb)pb.disabled=!hr;if(cb)cb.disabled=!hr;if(rb&&ir!==undefined){rb.textContent=ir?'⏹停止':'🎙录音';rb.classList.toggle('recording',ir)}}
+function pm(){if(S.au){$('ma').src=S.au;$('ma').play()}}
+function cm(i){if(!S.au)return;const p=P[i],fb=document.querySelector('.fb[data-i="'+i+'"]');fb.className='fb';fb.style.display='block';fb.textContent='🔊标准发音…';sp(p.eg[0]);setTimeout(()=>{fb.textContent='🎤你的录音…';$('ma').src=S.au;$('ma').play()},2000);setTimeout(()=>{fb.className='fb retry';fb.innerHTML='👂仔细听差异。<br>⚠️<b>'+p.er+'</b>'},4500)}
+function ck(i){const p=P[i],fb=document.querySelector('.fb[data-i="'+i+'"]');if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){fb.className='fb retry';fb.textContent='⚠️你的浏览器不支持语音识别';return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=new SR();rec.lang='en-US';rec.maxAlternatives=3;fb.className='fb';fb.style.display='block';fb.textContent='🎯说出: '+p.eg[0]+'…';rec.start();rec.onresult=e=>{const rs=[...Array(e.results[0].length)].map((_,j)=>e.results[0][j].transcript.toLowerCase().trim());const mt=rs.some(r=>r.includes(p.eg[0].toLowerCase()));if(mt){fb.className='fb good';fb.innerHTML='✅识别成功！<b>'+p.eg[0]+'</b> 发音可辨识';S.le.add(p.s);sv();us()}else{fb.className='fb retry';fb.innerHTML='⚠️识别为: <b>'+rs[0]+'</b>，目标: <b>'+p.eg[0]+'</b><br>'+p.er}};rec.onerror=()=>{fb.className='fb retry';fb.textContent='⚠️识别失败，请重试'}}
+function mq(){const a=P[Math.floor(Math.random()*P.length)],w=P.filter(p=>p.s!==a.s).sort(()=>Math.random()-.5).slice(0,3);S.qq={an:a,ch:[a,...w].sort(()=>Math.random()-.5)};S.qd=!1;$('qs').textContent=S.qq.an.s;$('qr').innerHTML=S.qq.ch.map(p=>'<button data-c="'+p.s+'"><b>'+p.eg[0]+'</b><br><small>'+p.eg.slice(1).join('·')+'</small></button>').join('');$('qf').textContent=''}
+function aq(sy){if(S.qd||!S.qq)return;S.qd=!0;const r=sy===S.qq.an.s;document.querySelectorAll('#qr button').forEach(b=>{if(b.dataset.c===S.qq.an.s)b.classList.add('correct');if(b.dataset.c===sy&&!r)b.classList.add('wrong')});if(r){S.sc++;S.le.add(S.qq.an.s);$('qf').innerHTML='<span style="color:var(--gd)">✅答对了！</span>'}else{S.mi.unshift({symbol:S.qq.an.s,at:new Date().toISOString()});S.mi=S.mi.slice(0,60);$('qf').innerHTML='<span style="color:var(--bd)">❌'+S.qq.an.s+'→'+S.qq.an.eg[0]+'</span>'}sv();us()}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const i=b.dataset.i!==undefined?+b.dataset.i:null;if(b.dataset.f!==undefined){S.fi=b.dataset.f;document.querySelectorAll('.filters button').forEach(x=>x.classList.toggle('active',x.dataset.f===S.fi));S.ex=-1;uc();return}if(i!=null){if(b.dataset.a==='sp')sp(P[i].eg[0]);if(b.dataset.a==='ex'){const we=S.ex===i;S.ex=we?-1:i;uc();if(!we)setTimeout(()=>{const c=document.querySelector('.card[data-idx="'+i+'"]');if(c)c.scrollIntoView({behavior:'smooth',block:'center'})},200)}if(b.dataset.a==='le'){if(S.le.has(P[i].s))S.le.delete(P[i].s);else S.le.add(P[i].s);sv();us();uc()}if(b.dataset.a==='li'){sp(P[i].se);setTimeout(()=>sp(P[i].eg[0]),2500)}if(b.dataset.a==='rc')tr(i);if(b.dataset.a==='pm')pm();if(b.dataset.a==='cp')cm(i);if(b.dataset.a==='ck')ck(i)}if(b.dataset.c)aq(b.dataset.c);if(b.id==='bq'){const p=$('qp');const o=!p.classList.contains('open');p.classList.toggle('open',o);if(o)mq()}if(b.id==='qc')$('qp').classList.remove('open');if(b.id==='qn')mq();if(b.id==='qsp'&&S.qq)sp(S.qq.an.eg[0])});
+$('s').addEventListener('input',e=>{S.se=e.target.value;S.ex=-1;uc()});
+us();uc();
+</script>
+</body>
+</html>
