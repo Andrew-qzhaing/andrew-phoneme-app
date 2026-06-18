@@ -206,13 +206,13 @@ function cardHTML(p){
     <div class="detail">
       <div class="big-sym">${p.s}</div>
       <div class="sentence">${p.sentence}<small>例词: ${p.eg.join(' · ')}</small></div>
-      <button data-act="vidplay" data-idx="${i}" style="display:block;width:100%;max-width:400px;margin:8px auto;padding:12px;background:var(--bd);color:#fff;border:0;border-radius:var(--r);cursor:pointer;font-size:16px;font-weight:700">▶ 播放视频讲解（主持人示范 ${p.s}）</button>
+      <video class="detail-vid" data-idx="${i}" src="video.mp4#t=${t}" controls playsinline preload="metadata" style="display:block;width:100%;max-width:400px;margin:6px auto;background:#000;border-radius:var(--r)"></video>
       <div class="vid-row">
         <button data-act="vidback" data-idx="${i}">-5s 往前</button>
         <button data-act="vidfwd" data-idx="${i}">+5s 往后</button>
         <span class="ts-label">⏱ ${fmt(t)}${off?' (已调'+off+'s)':''}</span>
+        <small style="color:var(--mu);font-size:10px">👆 点视频上的 ▶ 播放</small>
       </div>
-      <video class="detail-vid" data-idx="${i}" src="video.mp4#t=${t}" controls playsinline preload="none" style="display:block;width:100%;max-width:400px;margin:6px auto;background:#000;border-radius:var(--r)"></video>
       <div class="practice-row">
         <button class="btn-listen" data-act="listen" data-idx="${i}">🔊 标准音</button>
         <button class="btn-record" data-act="record" data-idx="${i}">🎙 录音</button>
@@ -238,7 +238,17 @@ function updateCards(){
 function updateStats(){$('learnedN').textContent=S.learned.size;$('scoreN').textContent=S.score;$('mistakeN').textContent=S.mistakes.length}
 
 function getVideo(idx){return document.querySelector(`video.detail-vid[data-idx="${idx}"]`)}
-function seekVideo(idx){const v=getVideo(idx);if(!v)return;v.currentTime=getTime(idx);v.play().catch(()=>{})}
+function seekVideo(idx){
+  const v = getVideo(idx);
+  if (!v) return;
+  // Reload with correct timestamp via src fragment — this works natively
+  const t = getTime(idx);
+  v.src = 'video.mp4#t=' + t;
+  v.load();
+  // Don't call play() — let user tap the video's native play button
+  // Scroll video into view
+  v.scrollIntoView({behavior:'smooth',block:'center'});
+}
 function adjustTime(idx,delta){S.timeOffsets[idx]=(S.timeOffsets[idx]||0)+delta;const v=getVideo(idx);if(v){const t=getTime(idx);v.currentTime=t;updateCards();const el=document.querySelector(`.ts-label[data-idx]`);}}
 function updateTimeLabel(idx){const el=document.querySelector(`.card[data-idx="${idx}"] .ts-label`);if(el)el.textContent='⏱ '+fmt(getTime(idx));}
 
