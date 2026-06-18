@@ -1,0 +1,412 @@
+[
+  {
+    "id": 0,
+    "src": "clips/s00.mp4",
+    "start": 79,
+    "symbols": [
+      "/i:/"
+    ],
+    "verified": true
+  },
+  {
+    "id": 1,
+    "src": "clips/s01.mp4",
+    "start": 118,
+    "symbols": [
+      "/ɪ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 2,
+    "src": "clips/s02.mp4",
+    "start": 148,
+    "symbols": [
+      "/e/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 3,
+    "src": "clips/s03.mp4",
+    "start": 178,
+    "symbols": [
+      "/æ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 4,
+    "src": "clips/s04.mp4",
+    "start": 207,
+    "symbols": [
+      "/ʊ/"
+    ],
+    "verified": true
+  },
+  {
+    "id": 5,
+    "src": "clips/s05.mp4",
+    "start": 237,
+    "symbols": [
+      "/ɒ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 6,
+    "src": "clips/s06.mp4",
+    "start": 267,
+    "symbols": [
+      "/ɔ:/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 7,
+    "src": "clips/s07.mp4",
+    "start": 297,
+    "symbols": [
+      "/u:/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 8,
+    "src": "clips/s08.mp4",
+    "start": 327,
+    "symbols": [
+      "/ʌ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 9,
+    "src": "clips/s09.mp4",
+    "start": 357,
+    "symbols": [
+      "/ɜ:/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 10,
+    "src": "clips/s10.mp4",
+    "start": 387,
+    "symbols": [
+      "/ə/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 11,
+    "src": "clips/s11.mp4",
+    "start": 417,
+    "symbols": [
+      "/ɑ:/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 12,
+    "src": "clips/s12.mp4",
+    "start": 447,
+    "symbols": [
+      "/eɪ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 13,
+    "src": "clips/s13.mp4",
+    "start": 477,
+    "symbols": [
+      "/ɔɪ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 14,
+    "src": "clips/s14.mp4",
+    "start": 507,
+    "symbols": [
+      "/əʊ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 15,
+    "src": "clips/s15.mp4",
+    "start": 537,
+    "symbols": [
+      "/aʊ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 16,
+    "src": "clips/s16.mp4",
+    "start": 573,
+    "symbols": [
+      "/aɪ/"
+    ],
+    "verified": true
+  },
+  {
+    "id": 17,
+    "src": "clips/s17.mp4",
+    "start": 603,
+    "symbols": [
+      "/ɪə/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 18,
+    "src": "clips/s18.mp4",
+    "start": 633,
+    "symbols": [
+      "/eə/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 19,
+    "src": "clips/s19.mp4",
+    "start": 663,
+    "symbols": [
+      "/ʊə/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 20,
+    "src": "clips/s20.mp4",
+    "start": 693,
+    "symbols": [
+      "/p/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 21,
+    "src": "clips/s21.mp4",
+    "start": 723,
+    "symbols": [
+      "/t/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 22,
+    "src": "clips/s22.mp4",
+    "start": 753,
+    "symbols": [
+      "/k/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 23,
+    "src": "clips/s23.mp4",
+    "start": 783,
+    "symbols": [
+      "/f/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 24,
+    "src": "clips/s24.mp4",
+    "start": 813,
+    "symbols": [
+      "/θ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 25,
+    "src": "clips/s25.mp4",
+    "start": 843,
+    "symbols": [
+      "/s/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 26,
+    "src": "clips/s26.mp4",
+    "start": 880,
+    "symbols": [
+      "/p/",
+      "/b/"
+    ],
+    "verified": true
+  },
+  {
+    "id": 27,
+    "src": "clips/s27.mp4",
+    "start": 920,
+    "symbols": [
+      "/t/",
+      "/d/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 28,
+    "src": "clips/s28.mp4",
+    "start": 960,
+    "symbols": [
+      "/k/",
+      "/ɡ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 29,
+    "src": "clips/s29.mp4",
+    "start": 1000,
+    "symbols": [
+      "/f/",
+      "/v/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 30,
+    "src": "clips/s30.mp4",
+    "start": 1040,
+    "symbols": [
+      "/θ/",
+      "/ð/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 31,
+    "src": "clips/s31.mp4",
+    "start": 1080,
+    "symbols": [
+      "/s/",
+      "/z/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 32,
+    "src": "clips/s32.mp4",
+    "start": 1120,
+    "symbols": [
+      "/r/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 33,
+    "src": "clips/s33.mp4",
+    "start": 1150,
+    "symbols": [
+      "/h/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 34,
+    "src": "clips/s34.mp4",
+    "start": 1177,
+    "symbols": [
+      "/s/",
+      "/z/"
+    ],
+    "verified": true
+  },
+  {
+    "id": 35,
+    "src": "clips/s35.mp4",
+    "start": 1217,
+    "symbols": [
+      "/ʃ/",
+      "/ʒ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 36,
+    "src": "clips/s36.mp4",
+    "start": 1266,
+    "symbols": [
+      "/ʃ/",
+      "/ʒ/"
+    ],
+    "verified": true
+  },
+  {
+    "id": 37,
+    "src": "clips/s37.mp4",
+    "start": 1305,
+    "symbols": [
+      "/tʃ/",
+      "/dʒ/"
+    ],
+    "verified": true
+  },
+  {
+    "id": 38,
+    "src": "clips/s38.mp4",
+    "start": 1345,
+    "symbols": [
+      "/tr/",
+      "/dr/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 39,
+    "src": "clips/s39.mp4",
+    "start": 1385,
+    "symbols": [
+      "/m/",
+      "/n/",
+      "/ŋ/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 40,
+    "src": "clips/s40.mp4",
+    "start": 1414,
+    "symbols": [
+      "/ts/",
+      "/dz/"
+    ],
+    "verified": true
+  },
+  {
+    "id": 41,
+    "src": "clips/s41.mp4",
+    "start": 1454,
+    "symbols": [
+      "/l/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 42,
+    "src": "clips/s42.mp4",
+    "start": 1484,
+    "symbols": [
+      "/j/"
+    ],
+    "verified": false
+  },
+  {
+    "id": 43,
+    "src": "clips/s43.mp4",
+    "start": 1514,
+    "symbols": [
+      "/w/"
+    ],
+    "verified": false
+  }
+]

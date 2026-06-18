@@ -1,335 +1,99 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <title>48音标跟练</title>
-  <meta name="theme-color" content="#0f172a">
-  <link rel="manifest" href="manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="48音标">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <style>
-    :root{--bg:#f6f7f2;--ink:#202426;--mu:#667071;--ln:#d8ded6;--pn:#fff;--ac:#0f766e;--a2:#c2410c;--a3:#4f46e5;--gd:#15803d;--bd:#b91c1c;--r:8px}
-    *,*::before,*::after{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.5;touch-action:manipulation;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
-    button,input{font:inherit}
-    .app{max-width:800px;margin:0 auto;min-height:100vh}
-
-    header{padding:8px 12px;background:var(--pn);border-bottom:1px solid var(--ln);position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:6px}
-    header h1{font-size:17px;margin:0;flex:1}
-    header button{min-height:30px;padding:4px 10px;border:1px solid var(--ln);border-radius:var(--r);background:var(--pn);cursor:pointer;font-size:11px}
-    header button.accent{background:var(--ac);color:#fff;border-color:var(--ac)}
-
-    .stat-bar{display:flex;gap:4px;padding:5px 10px;background:#fbfcf8;border-bottom:1px solid var(--ln);font-size:11px;color:var(--mu);overflow-x:auto}
-    .stat-bar span{margin-right:10px;white-space:nowrap}
-    .stat-bar b{color:var(--ink)}
-
-    .filters{display:flex;gap:4px;padding:6px 10px;flex-wrap:wrap;border-bottom:1px solid var(--ln);background:var(--pn)}
-    .filters button{padding:4px 10px;border:1px solid var(--ln);border-radius:999px;background:var(--pn);cursor:pointer;font-size:11px;white-space:nowrap}
-    .filters button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
-    .filters button .cnt{font-size:9px;opacity:.7}
-
-    .search-wrap{padding:6px 10px;background:var(--pn);border-bottom:1px solid var(--ln)}
-    .search{width:100%;padding:7px 10px;border:1px solid var(--ln);border-radius:var(--r);background:#fff;font-size:14px}
-
-    main{padding:6px}
-
-    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:5px}
-    .card{padding:10px;background:var(--pn);border:2px solid var(--ln);border-radius:var(--r);cursor:pointer;transition:border-color .15s;position:relative;touch-action:manipulation}
-    .card:active{background:#f0f4ef}
-    .card::after{content:"点击展开 ▶";position:absolute;top:8px;right:10px;font-size:10px;color:var(--mu);opacity:.7;pointer-events:none}
-    .card.expanded{border-color:var(--ac);grid-column:1/-1}
-    .card.expanded::after{content:"点击收起 ▲";color:var(--ac);opacity:1}
-    .card .sym{font-size:26px;font-weight:750;line-height:1.1}
-    .card .tag{display:inline-block;padding:2px 4px;border-radius:999px;color:#fff;font-size:9px;margin-bottom:2px}
-    .card .tag.vowel{background:var(--ac)}.card .tag.consonant{background:var(--a2)}
-    .card .eg{font-size:11px;color:var(--mu);margin:2px 0}
-    .card .tip{font-size:10px;background:#f0f4ef;padding:3px;border-radius:4px}
-    .card .acts{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
-    .card .acts button{min-height:24px;padding:2px 7px;font-size:10px;border:1px solid var(--ln);border-radius:4px;background:var(--pn);cursor:pointer}
-
-    .detail{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--ln)}
-    .card.expanded .detail{display:block}
-    .detail .big-sym{font-size:56px;font-weight:850;text-align:center;line-height:1}
-    .detail .sentence{text-align:center;font-size:15px;color:var(--ac);margin:4px 0}
-    .detail .sentence small{display:block;font-size:11px;color:var(--mu)}
-
-    .detail .vid-row{display:flex;gap:4px;align-items:center;margin:6px 0;flex-wrap:wrap;justify-content:center}
-    .detail .vid-row button{min-height:28px;padding:3px 8px;border:1px solid var(--ln);border-radius:4px;background:var(--pn);cursor:pointer;font-size:11px}
-    .detail .vid-row .ts-label{font-size:11px;color:var(--mu)}
-    .detail video{width:100%;max-width:400px;max-height:200px;background:#000;border-radius:var(--r);display:block;margin:4px auto}
-
-    .detail .practice-row{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:8px 0}
-    .detail .practice-row button{min-height:36px;padding:6px 12px;border-radius:var(--r);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:3px}
-    .btn-listen{background:var(--a3);color:#fff;border:0}
-    .btn-record{background:var(--bd);color:#fff;border:0}
-    .btn-record.recording{animation:pulse .8s infinite}
-    .btn-play{background:var(--ac);color:#fff;border:0}
-    .btn-compare{background:var(--a2);color:#fff;border:0}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-    .detail .rec-status{text-align:center;font-size:12px;min-height:18px}
-    .detail .fb{text-align:center;padding:6px;border-radius:var(--r);margin:4px 0;font-size:12px;display:none}
-    .detail .fb.good{background:#e8f5ec;color:var(--gd);display:block}
-    .detail .fb.retry{background:#fff3cd;color:#856404;display:block}
-    .detail .info-box{background:#f0f4ef;padding:6px;border-radius:var(--r);margin-top:4px}
-    .detail .info-box h4{font-size:11px;margin:0 0 2px;color:var(--ac)}
-    .detail .info-box p{font-size:11px;margin:0}
-    .detail .info-box.warn{background:#fff3cd}
-    .detail .info-box.warn h4{color:var(--a2)}
-
-    .quiz-panel{display:none;padding:12px;background:var(--pn);border-bottom:1px solid var(--ln)}
-    .quiz-panel.open{display:block}
-    .quiz-panel .quiz-sym{font-size:48px;font-weight:800;text-align:center}
-    .quiz-panel .qrow{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:6px 0}
-    .quiz-panel .qrow button{padding:8px 12px;border:1px solid var(--ln);border-radius:var(--r);background:var(--pn);cursor:pointer;font-size:13px;min-width:90px}
-    .quiz-panel .qrow button.correct{border-color:var(--gd);background:#e8f5ec}
-    .quiz-panel .qrow button.wrong{border-color:var(--bd);background:#fae8e8}
-    .quiz-panel .qfb{text-align:center;min-height:20px;font-weight:650;font-size:13px}
-
-    .empty{padding:24px;text-align:center;color:var(--mu)}
-
-    @media(min-width:600px){.cards{grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:7px}.detail .big-sym{font-size:72px}}
-  </style>
-</head>
-<body>
-<div class="app">
-  <header>
-    <h1>🗣 48音标跟练</h1>
-    <button id="btnQuiz" class="accent">✏️ 测验</button>
-  </header>
-
-  <div class="quiz-panel" id="quizPanel">
-    <div class="quiz-sym" id="quizSym">/i:/</div>
-    <button id="quizSpeak" style="display:block;margin:3px auto;padding:4px 10px;border:1px solid var(--ln);border-radius:var(--r);background:var(--pn);cursor:pointer;font-size:11px">🔊 听发音</button>
-    <div class="qrow" id="quizRow"></div>
-    <div class="qfb" id="quizFb"></div>
-    <button id="quizNext" style="display:block;margin:5px auto;padding:7px 18px;background:var(--ac);color:#fff;border:0;border-radius:var(--r);cursor:pointer;font-size:13px">下一题 ▶</button>
-    <button id="quizClose" style="display:block;margin:3px auto;padding:3px 10px;border:0;background:transparent;color:var(--mu);cursor:pointer;font-size:11px">关闭</button>
-  </div>
-
-  <div class="stat-bar">
-    <span>已掌握 <b id="learnedN">0</b></span>
-    <span>答对 <b id="scoreN">0</b></span>
-    <span>错题 <b id="mistakeN">0</b></span>
-  </div>
-
-  <div class="filters">
-    <button class="active" data-filter="all">全部<span class="cnt">48</span></button>
-    <button data-filter="monophthong">单元音<span class="cnt">12</span></button>
-    <button data-filter="diphthong">双元音<span class="cnt">8</span></button>
-    <button data-filter="voiceless">清辅音<span class="cnt">16</span></button>
-    <button data-filter="voiced">浊辅音<span class="cnt">12</span></button>
-  </div>
-
-  <div class="search-wrap"><input class="search" id="search" placeholder="搜索音标、例词…"></div>
-
-  <main><div class="cards" id="cards"></div></main>
+<!doctype html><html lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>48音标跟练</title><style>
+:root{--bg:#f6f7f2;--ink:#202426;--mu:#667071;--ln:#d8ded6;--pn:#fff;--ac:#0f766e;--a2:#c2410c;--a3:#4f46e5;--gd:#15803d;--bd:#b91c1c;--r:8px}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.5;touch-action:manipulation;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+button,input{font:inherit}
+.app{max-width:800px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+header{padding:8px 12px;background:var(--pn);border-bottom:1px solid var(--ln);position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:6px}
+header h1{font-size:17px;margin:0;flex:1}
+header button{min-height:30px;padding:4px 10px;border:1px solid var(--ln);border-radius:var(--r);background:var(--pn);cursor:pointer;font-size:11px}
+header button.accent{background:var(--ac);color:#fff;border-color:var(--ac)}
+.stat-bar{display:flex;gap:4px;padding:5px 10px;background:#fbfcf8;border-bottom:1px solid var(--ln);font-size:11px;color:var(--mu);overflow-x:auto}
+.stat-bar b{color:var(--ink);margin:0 4px}
+.filters{display:flex;gap:4px;padding:6px 10px;flex-wrap:wrap;border-bottom:1px solid var(--ln);background:var(--pn)}
+.filters button{padding:4px 10px;border:1px solid var(--ln);border-radius:999px;background:var(--pn);cursor:pointer;font-size:11px;white-space:nowrap}
+.filters button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.filters button .cnt{font-size:9px;opacity:.7}
+.search-wrap{padding:6px 10px;background:var(--pn);border-bottom:1px solid var(--ln)}
+.search{width:100%;padding:7px 10px;border:1px solid var(--ln);border-radius:var(--r);background:#fff;font-size:14px}
+main{flex:1;padding:6px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:5px}
+.card{padding:10px;background:var(--pn);border:2px solid var(--ln);border-radius:var(--r);cursor:pointer;position:relative}
+.card::after{content:"点击展开 ▶";position:absolute;top:8px;right:10px;font-size:10px;color:var(--mu);opacity:.7;pointer-events:none}
+.card.expanded{border-color:var(--ac);grid-column:1/-1}
+.card.expanded::after{content:"点击收起 ▲";color:var(--ac);opacity:1}
+.card .sym{font-size:26px;font-weight:750;line-height:1.1}
+.card .tag{display:inline-block;padding:2px 4px;border-radius:999px;color:#fff;font-size:9px;margin-bottom:2px}
+.card .tag.vowel{background:var(--ac)}.card .tag.consonant{background:var(--a2)}
+.card .eg{font-size:11px;color:var(--mu);margin:2px 0}
+.card .tip{font-size:10px;background:#f0f4ef;padding:3px;border-radius:4px}
+.card .acts{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
+.card .acts button{min-height:24px;padding:2px 7px;font-size:10px;border:1px solid var(--ln);border-radius:4px;background:var(--pn);cursor:pointer}
+.detail{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--ln)}
+.card.expanded .detail{display:block}
+.detail .big-sym{font-size:56px;font-weight:850;text-align:center;line-height:1}
+.detail .sentence{text-align:center;font-size:15px;color:var(--ac);margin:4px 0}
+.detail .sentence small{display:block;font-size:11px;color:var(--mu)}
+.detail video{width:100%;max-width:400px;max-height:200px;background:#000;border-radius:var(--r);display:block;margin:6px auto}
+.detail .pr-row{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.detail .pr-row button{min-height:36px;padding:6px 12px;border-radius:var(--r);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:3px;border:0}
+.btn-rec{background:var(--bd);color:#fff}.btn-rec.recording{animation:pulse .8s infinite}
+.btn-play{background:var(--ac);color:#fff}.btn-cmp{background:var(--a2);color:#fff}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.detail .rc-st{text-align:center;font-size:12px;min-height:18px}
+.detail .fb{text-align:center;padding:6px;border-radius:var(--r);margin:4px 0;font-size:12px;display:none}
+.detail .fb.good{background:#e8f5ec;color:var(--gd);display:block}
+.detail .fb.retry{background:#fff3cd;color:#856404;display:block}
+.detail .info-box{background:#f0f4ef;padding:6px;border-radius:var(--r);margin-top:4px}
+.detail .info-box h4{font-size:11px;margin:0 0 2px;color:var(--ac)}
+.detail .info-box p{font-size:11px;margin:0}
+.detail .info-box.warn{background:#fff3cd}
+.detail .info-box.warn h4{color:var(--a2)}
+.qp{display:none;padding:12px;background:var(--pn);border-bottom:1px solid var(--ln)}
+.qp.open{display:block}
+.qp .qs{font-size:48px;font-weight:800;text-align:center}
+.qp .qr{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:6px 0}
+.qp .qr button{padding:8px 12px;border:1px solid var(--ln);border-radius:var(--r);background:var(--pn);cursor:pointer;font-size:13px;min-width:90px}
+.qp .qr button.correct{border-color:var(--gd);background:#e8f5ec}
+.qp .qr button.wrong{border-color:var(--bd);background:#fae8e8}
+.qp .qf{text-align:center;min-height:20px;font-weight:650;font-size:13px}
+.empty{padding:24px;text-align:center;color:var(--mu)}
+@media(min-width:600px){.cards{grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:7px}.detail .big-sym{font-size:72px}}
+</style></head><body><div class=app>
+<header><h1>🗣 48音标跟练</h1><button id=bq class=accent>✏️测验</button></header>
+<div class=qp id=qp>
+<div class=qs id=qs>/i:/</div><div class=qr id=qr></div><div class=qf id=qf></div>
+<button id=qn style="display:block;margin:5px auto;padding:7px 18px;background:var(--ac);color:#fff;border:0;border-radius:var(--r);cursor:pointer;font-size:13px">下一题▶</button>
+<button id=qc style="display:block;margin:3px auto;padding:3px 10px;border:0;background:0 0;color:var(--mu);cursor:pointer;font-size:11px">关闭</button>
 </div>
-<audio id="myAudio" style="display:none"></audio>
-
+<div class=stat-bar><span>已掌握<b id=ln>0</b></span><span>答对<b id=sn>0</b></span><span>错题<b id=mn>0</b></span></div>
+<div class=filters>
+<button class=active data-f=all>全部<span class=cnt>48</span></button>
+<button data-f=monophthong>单元音<span class=cnt>12</span></button>
+<button data-f=diphthong>双元音<span class=cnt>8</span></button>
+<button data-f=voiceless>清辅音<span class=cnt>11</span></button>
+<button data-f=voiced>浊辅音<span class=cnt>17</span></button>
+</div>
+<div class=search-wrap><input class=search id=s placeholder="搜索音标、例词…"></div>
+<main><div class=cards id=cd></div></main>
+</div><audio id=ma hidden></audio>
 <script>
-const phonemes = [
-  {s:"/i:/",g:"monophthong",t:"vowel",n:"长元音",eg:["see","tea","meet"],sentence:"She sees the sea on the beach.",art:"舌前部抬高靠近硬腭，嘴角用力向两边拉开，声音拉长。",err:"别发成中文'衣'——嘴角要拉得更开，舌位更高。",vt:79},
-  {s:"/ɪ/",g:"monophthong",t:"vowel",n:"短元音",eg:["sit","big","fish"],sentence:"Sit in the big city.",art:"比 /i:/ 稍低稍松，嘴角微咧但不拉太开。短促有力。",err:"别和 /i:/ 搞混——sheep是羊，ship是船，嘴松一点就对了。",vt:118},
-  {s:"/e/",g:"monophthong",t:"vowel",n:"短元音",eg:["bed","head","pen"],sentence:"Let me get a red pen.",art:"嘴半张开，舌尖轻触下齿。声音短促。",err:"不要发成中文'爱'——嘴巴不要张太大，声音要干脆。",vt:148},
-  {s:"/æ/",g:"monophthong",t:"vowel",n:"短元音",eg:["cat","map","bad"],sentence:"The black cat sat on the mat.",art:"嘴张大！下颚下沉，舌前部抬起。是所有前元音里开口最大的。",err:"很多中国人发成 /e/——要把嘴张大到能塞两根手指。",vt:178},
-  {s:"/ɑ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["car","father","park"],sentence:"My father parked the car far away.",art:"口腔完全打开，舌位放到最低，声音拉长。",err:"美式常带 r 色彩，英式不卷舌。",vt:207},
-  {s:"/ɒ/",g:"monophthong",t:"vowel",n:"短元音",eg:["hot","dog","box"],sentence:"The hot dog is in the box.",art:"嘴唇收圆，舌后部抬起，声音短促。",err:"美式里这个音常变成 /ɑ:/。",vt:237},
-  {s:"/ɔ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["law","talk","more"],sentence:"I saw more laws on the door.",art:"双唇充分收圆，像吹口哨的嘴型。声音拉长。",err:"别发成 /ɒ/ 拉长版——嘴要更圆更紧。",vt:257},
-  {s:"/ʊ/",g:"monophthong",t:"vowel",n:"短元音",eg:["book","good","put"],sentence:"Put the good book here.",art:"嘴唇微圆、放松，舌后部微抬。短而轻。",err:"不是中文乌——嘴唇没那么圆。",vt:276},
-  {s:"/u:/",g:"monophthong",t:"vowel",n:"长元音",eg:["food","blue","moon"],sentence:"The blue moon is cool.",art:"双唇用力收圆、向前突出。舌后部充分抬高。",err:"别发成中文乌——嘴唇要更前突更圆。",vt:306},
-  {s:"/ʌ/",g:"monophthong",t:"vowel",n:"短元音",eg:["cup","sun","love"],sentence:"I love the sunny cup.",art:"嘴自然张开，舌中部微抬。短促有力。",err:"不要发成中文啊——嘴不要张太大。",vt:326},
-  {s:"/ɜ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["bird","word","learn"],sentence:"The bird learned a new word.",art:"舌中部抬起，口型稳定。英式不卷舌。",err:"英式不要卷舌，舌尖不要碰到上颚。",vt:356},
-  {s:"/ə/",g:"monophthong",t:"vowel",n:"弱读音",eg:["about","teacher","sofa"],sentence:"The teacher is about to arrive.",art:"全身最放松的音！嘴微张，舌自然平放。",err:"出现在非重读音节——如 banana 首尾的 a。",vt:395},
-  {s:"/eɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["day","name","take"],sentence:"Take the train today.",art:"从 /e/ 滑向 /ɪ/。前半段嘴半开，后半段嘴收小。",err:"别发成中文诶——要有滑动过程，前重后轻。",vt:425},
-  {s:"/aɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["time","my","like"],sentence:"I like my time alone.",art:"从大开口滑向 /ɪ/。前半张嘴张大，后半段迅速收拢。",err:"别发成中文爱——开头嘴要更大。",vt:455},
-  {s:"/ɔɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["boy","coin","voice"],sentence:"The boy's voice is full of joy.",art:"从圆唇滑向 /ɪ/，嘴唇由圆变扁，一气呵成。",err:"不要断成哦-衣两拍。",vt:484},
-  {s:"/əʊ/",g:"diphthong",t:"vowel",n:"双元音",eg:["go","home","boat"],sentence:"Go home on the old boat.",art:"从 /ə/ 滑向 /ʊ/，嘴唇由微开到圆。",err:"别发成中文欧——英语有滑动过程。",vt:504},
-  {s:"/aʊ/",g:"diphthong",t:"vowel",n:"双元音",eg:["now","house","mouth"],sentence:"Now get out of the house.",art:"大开口起音，迅速滑向圆唇 /ʊ/。",err:"别发成中文奥——开头要更大更开。",vt:534},
-  {s:"/ɪə/",g:"diphthong",t:"vowel",n:"双元音",eg:["ear","near","idea"],sentence:"Can you hear me clearly here?",art:"从 /ɪ/ 滑向 /ə/，由紧到松。",err:"别发成一个音——要听得出过渡。",vt:553},
-  {s:"/eə/",g:"diphthong",t:"vowel",n:"双元音",eg:["air","care","where"],sentence:"Take care of the air there.",art:"从 /e/ 滑向 /ə/，嘴由半开到放松。",err:"很多口音中这个音正在消失。",vt:573},
-  {s:"/ʊə/",g:"diphthong",t:"vowel",n:"双元音",eg:["tour","poor","sure"],sentence:"The tour was poor but sure.",art:"从 /ʊ/ 滑向 /ə/，圆唇快速放松。",err:"现代英语中常被 /ɔ:/ 替代。",vt:603},
-  {s:"/p/",g:"voiceless",t:"consonant",n:"清辅音",eg:["pen","cap","happy"],sentence:"Please pick up the happy puppy.",art:"双唇闭合，气流憋住后突然释放。声带不振动。",err:"不要发成中文泼——后面没有元音。",vt:623},
-  {s:"/b/",g:"voiced",t:"consonant",n:"浊辅音",eg:["boy","cab","baby"],sentence:"The baby boy loves the blue ball.",art:"动作同 /p/，但声带振动。",err:"别发成中文波——后面不能再带元音。",vt:642},
-  {s:"/t/",g:"voiceless",t:"consonant",n:"清辅音",eg:["tea","cat","city"],sentence:"Tom took the train to the city.",art:"舌尖抵上齿龈，憋气后弹开。声带不振动。",err:"别发成中文特——舌头弹开要干脆。",vt:662},
-  {s:"/d/",g:"voiced",t:"consonant",n:"浊辅音",eg:["day","red","ready"],sentence:"David had a good day today.",art:"动作同 /t/，但声带振动。",err:"词尾别吞——bad vs bat。",vt:682},
-  {s:"/k/",g:"voiceless",t:"consonant",n:"清辅音",eg:["key","back","school"],sentence:"Keep the black cat in the school.",art:"舌后部抵软腭，憋气后释放。声带不振动。",err:"别发成中文科——后面没有元音。",vt:702},
-  {s:"/ɡ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["go","bag","again"],sentence:"Give the big dog a good hug.",art:"动作同 /k/，但声带振动。",err:"词尾别吞——bag 不是 ba。",vt:731},
-  {s:"/f/",g:"voiceless",t:"consonant",n:"清辅音",eg:["fan","life","coffee"],sentence:"The fine coffee is for the family.",art:"上齿轻咬下唇，气流从缝隙中摩擦通过。",err:"别咬太紧——只是轻碰。",vt:761},
-  {s:"/v/",g:"voiced",t:"consonant",n:"浊辅音",eg:["very","give","seven"],sentence:"I love the very clever movie.",art:"动作同 /f/，但声带振动。",err:"中国人常发成 /w/——very 不是 wery！",vt:781},
-  {s:"/θ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["think","bath","three"],sentence:"I think three thanks is enough.",art:"舌尖轻轻放在上下齿之间，气流摩擦通过。",err:"别发成 /s/！think 不是 sink。舌尖在牙缝间！",vt:801},
-  {s:"/ð/",g:"voiced",t:"consonant",n:"浊辅音",eg:["this","mother","they"],sentence:"This is their mother's clothes.",art:"动作同 /θ/，但声带振动。",err:"别发成 /d/ 或 /z/——this 不是 dis。",vt:830},
-  {s:"/s/",g:"voiceless",t:"consonant",n:"清辅音",eg:["see","bus","city"],sentence:"She sees six small cats in the city.",art:"舌尖靠近上齿龈但不碰到，气流从窄缝中通过。",err:"不要发成中文丝——英语 s 舌尖更靠后。",vt:880},
-  {s:"/z/",g:"voiced",t:"consonant",n:"浊辅音",eg:["zoo","rose","busy"],sentence:"The busy bees buzz in the zoo.",art:"动作同 /s/，但声带振动。",err:"词尾 /z/ 要振动——is 不是 iss。",vt:929},
-  {s:"/ʃ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["she","fish","nation"],sentence:"She sells fresh fish in the shop.",art:"嘴唇微圆略突，舌面抬起靠近硬腭。",err:"嘴唇一定要圆！she 不是 see。",vt:959},
-  {s:"/ʒ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["vision","measure","garage"],sentence:"The treasure was a great pleasure.",art:"动作同 /ʃ/，但声带振动。",err:"声带一定要振动——像汉语日但嘴更圆。",vt:1008},
-  {s:"/r/",g:"voiced",t:"consonant",n:"浊辅音",eg:["red","right","around"],sentence:"The red rose is right around the corner.",art:"舌尖上卷或后缩，不要碰到上颚。嘴唇略圆。",err:"不要发成中文日——舌尖不能碰到上颚，要悬空卷起。",vt:1030},
-  {s:"/h/",g:"voiceless",t:"consonant",n:"清辅音",eg:["he","home","behind"],sentence:"He has a happy home behind the hill.",art:"喉部送气，口型跟随后面的元音变化。",err:"不要太用力——英语 /h/ 很轻。",vt:1048},
-  {s:"/tʃ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["chair","watch","teacher"],sentence:"The teacher chose a cheap chair.",art:"舌尖抵上齿龈然后释放时带出摩擦。",err:"别发成中文吃——英语更短更干脆。",vt:1068},
-  {s:"/dʒ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["job","age","orange"],sentence:"John just got a new job in June.",art:"动作同 /tʃ/，但声带振动。",err:"注意声带振动——手摸喉咙验证。",vt:1117},
-  {s:"/tr/",g:"voiceless",t:"consonant",n:"清辅音",eg:["tree","train","try"],sentence:"Try to travel by train.",art:"/t/ 后立刻接 /r/，像是一个连贯的音。",err:"不要拆成 t-rain 两个音。",vt:1147},
-  {s:"/dr/",g:"voiced",t:"consonant",n:"浊辅音",eg:["dream","drive","drink"],sentence:"I dream of driving and drinking tea.",art:"/d/ 后立刻接 /r/，声带振动。",err:"和 /tr/ 区别是声带有无振动。",vt:1177},
-  {s:"/ts/",g:"voiceless",t:"consonant",n:"清辅音",eg:["cats","gets","lights"],sentence:"The cats get lots of lights.",art:"/t/ 和 /s/ 连续释放。常见于复数词尾。",err:"不要拆成两个独立的音。",vt:1196},
-  {s:"/dz/",g:"voiced",t:"consonant",n:"浊辅音",eg:["beds","cards","friends"],sentence:"My friends put cards on the beds.",art:"/d/ 和 /z/ 连续释放，声带振动。",err:"词尾别吞——beds 要有 /dz/ 收尾。",vt:1226},
-  {s:"/m/",g:"voiced",t:"consonant",n:"鼻音",eg:["man","home","summer"],sentence:"My mom made some more money.",art:"双唇闭合，软腭下降，声音从鼻腔出来。",err:"嘴唇要闭严——气流不能从嘴里漏。",vt:1266},
-  {s:"/n/",g:"voiced",t:"consonant",n:"鼻音",eg:["no","ten","dinner"],sentence:"No one knew the new name.",art:"舌尖抵上齿龈，嘴微张，声音从鼻腔出来。",err:"舌尖必须到位——顶住上齿龈。",vt:1285},
-  {s:"/ŋ/",g:"voiced",t:"consonant",n:"鼻音",eg:["sing","long","English"],sentence:"The king is singing a long song.",art:"舌后部抬起抵软腭，声音从鼻腔出。",err:"不要在 /ŋ/ 后面再加 /ɡ/——sing 不是 sing-g。",vt:1305},
-  {s:"/l/",g:"voiced",t:"consonant",n:"舌侧音",eg:["light","milk","hello"],sentence:"Let the little girl look at the light.",art:"舌尖抵上齿龈，气流从舌头两侧通过。",err:"词尾 dark l 舌后部也要抬起。",vt:1335},
-  {s:"/j/",g:"voiced",t:"consonant",n:"半元音",eg:["yes","you","yellow"],sentence:"Yes, you used the yellow one yesterday.",art:"舌前部抬高接近硬腭，然后迅速滑向后面的元音。",err:"不要发成中文耶——英语更轻更短。",vt:1384},
-  {s:"/w/",g:"voiced",t:"consonant",n:"半元音",eg:["we","water","quick"],sentence:"We want warm water in the winter.",art:"双唇收圆、前突，然后迅速打开滑向后面的元音。",err:"别发成 /v/！we 不是 vee。",vt:1414},
-];
-
-const S={filter:'all',search:'',expandedIdx:-1,timeOffsets:{},learned:new Set(JSON.parse(localStorage.getItem('ph48learned')||'[]')),mistakes:JSON.parse(localStorage.getItem('ph48mistakes')||'[]'),score:+localStorage.getItem('ph48score')||0,quizQ:null,quizDone:false,mr:null,chunks:[],audioURL:null};
+const PH=[{s:"/i:/",g:"monophthong",t:"vowel",n:"长元音",eg:["see","tea","meet"],se:"She sees the sea on the beach.",ar:"舌前部抬高靠近硬腭，嘴角拉开，声音拉长。",er:"别发成中文衣——嘴角要拉得更开。",sg:0,src:"clips/s00.mp4"},{s:"/ɪ/",g:"monophthong",t:"vowel",n:"短元音",eg:["sit","big","fish"],se:"Sit in the big city.",ar:"比 /i:/ 稍松，嘴角微咧。短促有力。",er:"sheep是羊，ship是船，嘴松一点就对了。",sg:1,src:"clips/s01.mp4"},{s:"/e/",g:"monophthong",t:"vowel",n:"短元音",eg:["bed","head","pen"],se:"Let me get a red pen.",ar:"嘴半开，舌尖轻触下齿。声音短促。",er:"不要发成中文爱——嘴巴不要张太大。",sg:2,src:"clips/s02.mp4"},{s:"/æ/",g:"monophthong",t:"vowel",n:"短元音",eg:["cat","map","bad"],se:"The black cat sat on the mat.",ar:"嘴张大！所有前元音里开口最大。",er:"很多中国人发成 /e/——要把嘴张大。",sg:3,src:"clips/s03.mp4"},{s:"/ɑ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["car","father","park"],se:"My father parked the car far away.",ar:"口腔完全打开，舌位放到最低，声音拉长。",er:"美式常带 r 色彩，英式不卷舌。",sg:11,src:"clips/s11.mp4"},{s:"/ɒ/",g:"monophthong",t:"vowel",n:"短元音",eg:["hot","dog","box"],se:"The hot dog is in the box.",ar:"嘴唇收圆，舌后部抬起。英式发音。",er:"美式里常变成 /ɑ:/。",sg:5,src:"clips/s05.mp4"},{s:"/ɔ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["law","talk","more"],se:"I saw more laws on the door.",ar:"双唇充分收圆。声音拉长。",er:"别发成 /ɒ/ 拉长版。",sg:6,src:"clips/s06.mp4"},{s:"/ʊ/",g:"monophthong",t:"vowel",n:"短元音",eg:["book","good","put"],se:"Put the good book here.",ar:"嘴唇微圆放松。短而轻。",er:"不是中文乌——嘴唇没那么圆。",sg:4,src:"clips/s04.mp4"},{s:"/u:/",g:"monophthong",t:"vowel",n:"长元音",eg:["food","blue","moon"],se:"The blue moon is cool.",ar:"双唇用力收圆前突。",er:"别发成中文乌——嘴唇更前突。",sg:7,src:"clips/s07.mp4"},{s:"/ʌ/",g:"monophthong",t:"vowel",n:"短元音",eg:["cup","sun","love"],se:"I love the sunny cup.",ar:"嘴自然张开，舌中部微抬。",er:"不要发成中文啊。",sg:8,src:"clips/s08.mp4"},{s:"/ɜ:/",g:"monophthong",t:"vowel",n:"长元音",eg:["bird","word","learn"],se:"The bird learned a new word.",ar:"舌中部抬起，口型稳定。",er:"英式不要卷舌。",sg:9,src:"clips/s09.mp4"},{s:"/ə/",g:"monophthong",t:"vowel",n:"弱读音",eg:["about","teacher","sofa"],se:"The teacher is about to arrive.",ar:"最放松的音！嘴微张。",er:"出现在非重读音节。",sg:10,src:"clips/s10.mp4"},{s:"/eɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["day","name","take"],se:"Take the train today.",ar:"从 /e/ 滑向 /ɪ/。",er:"别发成中文诶——要有滑动。",sg:12,src:"clips/s12.mp4"},{s:"/aɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["time","my","like"],se:"I like my time alone.",ar:"从大开口滑向 /ɪ/。",er:"别发成中文爱——开头嘴更大。",sg:16,src:"clips/s16.mp4"},{s:"/ɔɪ/",g:"diphthong",t:"vowel",n:"双元音",eg:["boy","coin","voice"],se:"The boy's voice is full of joy.",ar:"从圆唇滑向 /ɪ/。",er:"不要断成两拍。",sg:13,src:"clips/s13.mp4"},{s:"/əʊ/",g:"diphthong",t:"vowel",n:"双元音",eg:["go","home","boat"],se:"Go home on the old boat.",ar:"从 /ə/ 滑向 /ʊ/。",er:"别发成中文欧。",sg:14,src:"clips/s14.mp4"},{s:"/aʊ/",g:"diphthong",t:"vowel",n:"双元音",eg:["now","house","mouth"],se:"Now get out of the house.",ar:"大开口滑向圆唇。",er:"别发成中文奥。",sg:15,src:"clips/s15.mp4"},{s:"/ɪə/",g:"diphthong",t:"vowel",n:"双元音",eg:["ear","near","idea"],se:"Can you hear me clearly here?",ar:"从 /ɪ/ 滑向 /ə/。",er:"别发成一个音。",sg:17,src:"clips/s17.mp4"},{s:"/eə/",g:"diphthong",t:"vowel",n:"双元音",eg:["air","care","where"],se:"Take care of the air there.",ar:"从 /e/ 滑向 /ə/。",er:"很多口音中正在消失。",sg:18,src:"clips/s18.mp4"},{s:"/ʊə/",g:"diphthong",t:"vowel",n:"双元音",eg:["tour","poor","sure"],se:"The tour was poor but sure.",ar:"从 /ʊ/ 滑向 /ə/。",er:"现代英语中常被 /ɔ:/ 替代。",sg:19,src:"clips/s19.mp4"},{s:"/p/",g:"voiceless",t:"consonant",n:"清辅音",eg:["pen","cap","happy"],se:"Please pick up the happy puppy.",ar:"双唇闭合后爆破。声带不振动。",er:"不要发成中文泼——后面没有元音。",sg:20,src:"clips/s20.mp4"},{s:"/b/",g:"voiced",t:"consonant",n:"浊辅音",eg:["boy","cab","baby"],se:"The baby boy loves the blue ball.",ar:"动作同 /p/，声带振动。",er:"别发成中文波。",sg:26,src:"clips/s26.mp4"},{s:"/t/",g:"voiceless",t:"consonant",n:"清辅音",eg:["tea","cat","city"],se:"Tom took the train to the city.",ar:"舌尖抵上齿龈后弹开。",er:"别发成中文特——舌头要干脆。",sg:21,src:"clips/s21.mp4"},{s:"/d/",g:"voiced",t:"consonant",n:"浊辅音",eg:["day","red","ready"],se:"David had a good day today.",ar:"动作同 /t/，声带振动。",er:"词尾别吞——bad vs bat。",sg:27,src:"clips/s27.mp4"},{s:"/k/",g:"voiceless",t:"consonant",n:"清辅音",eg:["key","back","school"],se:"Keep the black cat in the school.",ar:"舌后部抵软腭后爆破。",er:"别发成中文科。",sg:22,src:"clips/s22.mp4"},{s:"/ɡ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["go","bag","again"],se:"Give the big dog a good hug.",ar:"动作同 /k/，声带振动。",er:"词尾别吞——bag不是ba。",sg:28,src:"clips/s28.mp4"},{s:"/f/",g:"voiceless",t:"consonant",n:"清辅音",eg:["fan","life","coffee"],se:"The fine coffee is for the family.",ar:"上齿轻碰下唇摩擦。",er:"别咬太紧——只是轻碰。",sg:23,src:"clips/s23.mp4"},{s:"/v/",g:"voiced",t:"consonant",n:"浊辅音",eg:["very","give","seven"],se:"I love the very clever movie.",ar:"动作同 /f/，声带振动。",er:"very不是wery！上齿碰下唇。",sg:29,src:"clips/s29.mp4"},{s:"/θ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["think","bath","three"],se:"I think three thanks is enough.",ar:"舌尖轻放上下齿之间。",er:"think不是sink！舌尖在牙缝间。",sg:24,src:"clips/s24.mp4"},{s:"/ð/",g:"voiced",t:"consonant",n:"浊辅音",eg:["this","mother","they"],se:"This is their mother's clothes.",ar:"动作同 /θ/，声带振动。",er:"this不是dis。",sg:30,src:"clips/s30.mp4"},{s:"/s/",g:"voiceless",t:"consonant",n:"清辅音",eg:["see","bus","city"],se:"She sees six small cats in the city.",ar:"舌尖靠近上齿龈，气流通过。",er:"英语s舌尖更靠后。",sg:25,src:"clips/s25.mp4"},{s:"/z/",g:"voiced",t:"consonant",n:"浊辅音",eg:["zoo","rose","busy"],se:"The busy bees buzz in the zoo.",ar:"动作同 /s/，声带振动。",er:"is不是iss。",sg:31,src:"clips/s31.mp4"},{s:"/ʃ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["she","fish","nation"],se:"She sells fresh fish in the shop.",ar:"嘴唇微圆，舌面抬起。",er:"嘴唇一定要圆！she不是see。",sg:35,src:"clips/s35.mp4"},{s:"/ʒ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["vision","measure","garage"],se:"The treasure was a great pleasure.",ar:"动作同 /ʃ/，声带振动。",er:"声带振动——像汉语日但嘴更圆。",sg:35,src:"clips/s35.mp4"},{s:"/r/",g:"voiced",t:"consonant",n:"浊辅音",eg:["red","right","around"],se:"The red rose is right around the corner.",ar:"舌尖上卷不碰上颚。",er:"舌尖悬空卷起，不要碰。",sg:32,src:"clips/s32.mp4"},{s:"/h/",g:"voiceless",t:"consonant",n:"清辅音",eg:["he","home","behind"],se:"He has a happy home behind the hill.",ar:"喉部送气，口型跟后面元音走。",er:"英语 /h/ 很轻。",sg:33,src:"clips/s33.mp4"},{s:"/tʃ/",g:"voiceless",t:"consonant",n:"清辅音",eg:["chair","watch","teacher"],se:"The teacher chose a cheap chair.",ar:"先堵再摩擦释放。",er:"别发成中文吃——更短更干脆。",sg:37,src:"clips/s37.mp4"},{s:"/dʒ/",g:"voiced",t:"consonant",n:"浊辅音",eg:["job","age","orange"],se:"John just got a new job in June.",ar:"动作同 /tʃ/，声带振动。",er:"手摸喉咙验证。",sg:37,src:"clips/s37.mp4"},{s:"/tr/",g:"voiceless",t:"consonant",n:"清辅音",eg:["tree","train","try"],se:"Try to travel by train.",ar:"/t/ 后立刻接 /r/。",er:"不要拆成两个音。",sg:38,src:"clips/s38.mp4"},{s:"/dr/",g:"voiced",t:"consonant",n:"浊辅音",eg:["dream","drive","drink"],se:"I dream of driving and drinking tea.",ar:"/d/ 后立刻接 /r/。",er:"和 /tr/ 区别是声带振动。",sg:38,src:"clips/s38.mp4"},{s:"/ts/",g:"voiceless",t:"consonant",n:"清辅音",eg:["cats","gets","lights"],se:"The cats get lots of lights.",ar:"/t/ 和 /s/ 连续释放。",er:"像踩刹车的声音。",sg:40,src:"clips/s40.mp4"},{s:"/dz/",g:"voiced",t:"consonant",n:"浊辅音",eg:["beds","cards","friends"],se:"My friends put cards on the beds.",ar:"/d/ 和 /z/ 连续释放。",er:"beds要有/dz/收尾。",sg:40,src:"clips/s40.mp4"},{s:"/m/",g:"voiced",t:"consonant",n:"鼻音",eg:["man","home","summer"],se:"My mom made some more money.",ar:"双唇闭合，声音从鼻腔出。",er:"嘴唇要闭严。",sg:39,src:"clips/s39.mp4"},{s:"/n/",g:"voiced",t:"consonant",n:"鼻音",eg:["no","ten","dinner"],se:"No one knew the new name.",ar:"舌尖抵上齿龈，鼻音。",er:"舌尖必须到位。",sg:39,src:"clips/s39.mp4"},{s:"/ŋ/",g:"voiced",t:"consonant",n:"鼻音",eg:["sing","long","English"],se:"The king is singing a long song.",ar:"舌后部抬起，鼻音。",er:"sing不是sing-g。",sg:39,src:"clips/s39.mp4"},{s:"/l/",g:"voiced",t:"consonant",n:"舌侧音",eg:["light","milk","hello"],se:"Let the little girl look at the light.",ar:"舌尖抵上齿龈，气流从舌两侧过。",er:"词尾dark l舌后部也要抬起。",sg:41,src:"clips/s41.mp4"},{s:"/j/",g:"voiced",t:"consonant",n:"半元音",eg:["yes","you","yellow"],se:"Yes, you used the yellow one yesterday.",ar:"舌前部抬高，迅速滑向后面元音。",er:"别发成中文耶——更轻更短。",sg:42,src:"clips/s42.mp4"},{s:"/w/",g:"voiced",t:"consonant",n:"半元音",eg:["we","water","quick"],se:"We want warm water in the winter.",ar:"双唇收圆，迅速打开。",er:"we不是vee！嘴唇要圆。",sg:43,src:"clips/s43.mp4"}];
+const S={fi:"all",se:"",ex:-1,le:new Set(JSON.parse(localStorage.getItem("phl")||"[]")),mi:JSON.parse(localStorage.getItem("phm")||"[]"),sc:+localStorage.getItem("phs")||0,qq:null,qd:!1,mr:null,ch:[],au:null};
 const $=id=>document.getElementById(id);
-function save(){localStorage.setItem('ph48learned',JSON.stringify([...S.learned]));localStorage.setItem('ph48mistakes',JSON.stringify(S.mistakes));localStorage.setItem('ph48score',String(S.score))}
-function speak(t){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.82;speechSynthesis.speak(u)}
-function fmt(s){const m=Math.floor(s/60),sec=s%60;return`${m}:${String(sec).padStart(2,'0')}`}
-function getTime(idx){const p=phonemes[idx];return Math.max(0,p.vt+(S.timeOffsets[idx]||0))}
-
-function visible(){const q=S.search.trim().toLowerCase();return phonemes.filter(p=>(S.filter==='all'||p.g===S.filter)&&(!q||[p.s,p.n,p.err,p.sentence,...p.eg].join(' ').toLowerCase().includes(q)))}
-
-function cardHTML(p){
-  const i=phonemes.indexOf(p),exp=S.expandedIdx===i,off=S.timeOffsets[i]||0,t=getTime(i);
-  return`<div class="card${exp?' expanded':''}" data-idx="${i}">
-    <span class="tag ${p.t}">${p.n}</span>
-    <div class="sym">${p.s}</div>
-    <div class="eg">${p.eg.join(' · ')}</div>
-    <div class="tip">${p.err.substring(0,38)}…</div>
-    <div class="acts">
-      <button data-act="speak" data-idx="${i}">🔊听</button>
-      <button data-act="expand" data-idx="${i}">${exp?'收起':'🎤练'}</button>
-      <button data-act="learn" data-idx="${i}">${S.learned.has(p.s)?'✓已掌握':'标记'}</button>
-    </div>
-    <div class="detail">
-      <div class="big-sym">${p.s}</div>
-      <div class="sentence">${p.sentence}<small>例词: ${p.eg.join(' · ')}</small></div>
-      <video class="detail-vid" data-idx="${i}" src="video.mp4#t=${t}" controls playsinline preload="metadata" style="display:block;width:100%;max-width:400px;margin:6px auto;background:#000;border-radius:var(--r)"></video>
-      <div class="vid-row">
-        <button data-act="vidback" data-idx="${i}">-5s 往前</button>
-        <button data-act="vidfwd" data-idx="${i}">+5s 往后</button>
-        <span class="ts-label">⏱ ${fmt(t)}${off?' (已调'+off+'s)':''}</span>
-        <small style="color:var(--mu);font-size:10px">👆 点视频上的 ▶ 播放</small>
-      </div>
-      <div class="practice-row">
-        <button class="btn-listen" data-act="listen" data-idx="${i}">🔊 标准音</button>
-        <button class="btn-record" data-act="record" data-idx="${i}">🎙 录音</button>
-        <button class="btn-play" data-act="playmy" data-idx="${i}" disabled>▶ 回听</button>
-        <button class="btn-compare" data-act="compare" data-idx="${i}" disabled>🔄 对比</button>
-      </div>
-      <div class="practice-row">
-        <button data-act="check" data-idx="${i}" style="background:var(--a3);color:#fff;border:0;min-height:34px;padding:4px 12px;border-radius:var(--r);cursor:pointer;font-size:12px">🎯 语音识别校验</button>
-      </div>
-      <div class="rec-status" data-idx="${i}"></div>
-      <div class="fb" data-idx="${i}"></div>
-      <div class="info-box"><h4>📐 发音要点</h4><p>${p.art}</p></div>
-      <div class="info-box warn"><h4>⚠️ 常见错误</h4><p>${p.err}</p></div>
-    </div>
-  </div>`;
-}
-
-function updateCards(){
-  const items=visible();
-  $('cards').innerHTML=items.length?items.map(cardHTML).join(''):'<div class="empty">没有匹配的音标</div>';
-}
-
-function updateStats(){$('learnedN').textContent=S.learned.size;$('scoreN').textContent=S.score;$('mistakeN').textContent=S.mistakes.length}
-
-function getVideo(idx){return document.querySelector(`video.detail-vid[data-idx="${idx}"]`)}
-function seekVideo(idx){
-  const v = getVideo(idx);
-  if (!v) return;
-  // Reload with correct timestamp via src fragment — this works natively
-  const t = getTime(idx);
-  v.src = 'video.mp4#t=' + t;
-  v.load();
-  // Don't call play() — let user tap the video's native play button
-  // Scroll video into view
-  v.scrollIntoView({behavior:'smooth',block:'center'});
-}
-function adjustTime(idx,delta){S.timeOffsets[idx]=(S.timeOffsets[idx]||0)+delta;const v=getVideo(idx);if(v){const t=getTime(idx);v.currentTime=t;updateCards();const el=document.querySelector(`.ts-label[data-idx]`);}}
-function updateTimeLabel(idx){const el=document.querySelector(`.card[data-idx="${idx}"] .ts-label`);if(el)el.textContent='⏱ '+fmt(getTime(idx));}
-
-// Recording
-async function toggleRecord(idx){
-  if(S.mr&&S.mr.state==='recording'){S.mr.stop();return}
-  S.chunks=[];S.audioURL=null;
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    S.mr=new MediaRecorder(stream,{mimeType:'audio/webm'});
-    S.mr.ondataavailable=e=>{if(e.data.size>0)S.chunks.push(e.data)};
-    S.mr.onstop=()=>{stream.getTracks().forEach(t=>t.stop());const blob=new Blob(S.chunks,{type:'audio/webm'});S.audioURL=URL.createObjectURL(blob);$('myAudio').src=S.audioURL;updateDtlBtns(idx,true);updateRecSt(idx,'✅ 录音完成！')};
-    S.mr.start();updateRecSt(idx,'🔴 正在录音…说出例句');updateDtlBtns(idx,null,true);
-  }catch(e){updateRecSt(idx,'❌ 无法访问麦克风')}
-}
-function updateRecSt(idx,t){const el=document.querySelector(`.rec-status[data-idx="${idx}"]`);if(el)el.textContent=t||''}
-function updateDtlBtns(idx,hasRec,isRec){
-  const card=document.querySelector(`.card[data-idx="${idx}"]`);if(!card)return;
-  const pb=card.querySelector('[data-act="playmy"]'),cb=card.querySelector('[data-act="compare"]'),rb=card.querySelector('[data-act="record"]');
-  if(pb)pb.disabled=!hasRec;if(cb)cb.disabled=!hasRec;
-  if(rb&&isRec!==undefined){rb.textContent=isRec?'⏹ 停止':'🎙 录音';rb.classList.toggle('recording',isRec)}
-}
-function playMy(){if(S.audioURL){$('myAudio').src=S.audioURL;$('myAudio').play()}}
-function compareRec(idx){
-  if(!S.audioURL)return;const p=phonemes[idx],fb=document.querySelector(`.fb[data-idx="${idx}"]`);
-  fb.className='fb';fb.style.display='block';fb.textContent='🔊 标准发音…';speak(p.eg[0]);
-  setTimeout(()=>{fb.textContent='🎤 你的录音…';$('myAudio').src=S.audioURL;$('myAudio').play()},2000);
-  setTimeout(()=>{fb.className='fb retry';fb.innerHTML='👂 仔细听差异。<br>⚠️ <b>'+p.err+'</b>'},4500);
-}
-function checkPron(idx){
-  const p=phonemes[idx],fb=document.querySelector(`.fb[data-idx="${idx}"]`);
-  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){fb.className='fb retry';fb.textContent='⚠️ 你的浏览器不支持语音识别';return}
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=new SR();rec.lang='en-US';rec.maxAlternatives=3;
-  fb.className='fb';fb.style.display='block';fb.textContent='🎯 说出: '+p.eg[0]+'…';rec.start();
-  rec.onresult=e=>{const results=[...Array(e.results[0].length)].map((_,i)=>e.results[0][i].transcript.toLowerCase().trim());const match=results.some(r=>r.includes(p.eg[0].toLowerCase()));if(match){fb.className='fb good';fb.innerHTML='✅ 识别成功！<b>'+p.eg[0]+'</b> 发音可辨识';S.learned.add(p.s);save();updateStats()}else{fb.className='fb retry';fb.innerHTML='⚠️ 识别为: <b>'+results[0]+'</b>，目标: <b>'+p.eg[0]+'</b><br>'+p.err}};
-  rec.onerror=()=>{fb.className='fb retry';fb.textContent='⚠️ 识别失败，请重试'}
-}
-
-// Quiz
-function makeQuiz(){const a=phonemes[Math.floor(Math.random()*phonemes.length)],w=phonemes.filter(p=>p.s!==a.s).sort(()=>Math.random()-.5).slice(0,3);S.quizQ={answer:a,choices:[a,...w].sort(()=>Math.random()-.5)};S.quizDone=false;$('quizSym').textContent=S.quizQ.answer.s;$('quizRow').innerHTML=S.quizQ.choices.map(p=>`<button data-choice="${p.s}"><b>${p.eg[0]}</b><br><small>${p.eg.slice(1).join('·')}</small></button>`).join('');$('quizFb').textContent=''}
-function answerQuiz(sym){if(S.quizDone||!S.quizQ)return;S.quizDone=true;const right=sym===S.quizQ.answer.s;document.querySelectorAll('#quizRow button').forEach(b=>{if(b.dataset.choice===S.quizQ.answer.s)b.classList.add('correct');if(b.dataset.choice===sym&&!right)b.classList.add('wrong')});if(right){S.score++;S.learned.add(S.quizQ.answer.s);$('quizFb').innerHTML='<span style="color:var(--gd)">✅ 答对了！</span>'}else{S.mistakes.unshift({symbol:S.quizQ.answer.s,at:new Date().toISOString()});S.mistakes=S.mistakes.slice(0,60);$('quizFb').innerHTML='<span style="color:var(--bd)">❌ '+S.quizQ.answer.s+' → '+S.quizQ.answer.eg[0]+'</span>'}save();updateStats()}
-
-// Events — whole card is clickable
-document.addEventListener('click',e=>{
-  // Check if clicked on a card
-  const card = e.target.closest('.card');
-  if (card && !e.target.closest('button')) {
-    const idx = +card.dataset.idx;
-    if (!isNaN(idx)) {
-      const wasExp = S.expandedIdx === idx;
-      S.expandedIdx = wasExp ? -1 : idx;
-      updateCards();
-      if (!wasExp) seekVideo(idx);
-      return;
-    }
-  }
-
-  const btn=e.target.closest('button');if(!btn)return;
-  const idx=btn.dataset.idx!==undefined?+btn.dataset.idx:null;
-  if(btn.dataset.filter!==undefined){S.filter=btn.dataset.filter;document.querySelectorAll('.filters button').forEach(b=>b.classList.toggle('active',b.dataset.filter===S.filter));S.expandedIdx=-1;updateCards();return}
-  if(idx!=null){
-    if(btn.dataset.act==='speak')speak(phonemes[idx].eg[0]);
-    if(btn.dataset.act==='expand'){const wasExp=S.expandedIdx===idx;S.expandedIdx=wasExp?-1:idx;updateCards();if(!wasExp)setTimeout(()=>{const c=document.querySelector(`.card[data-idx="${idx}"]`);if(c)c.scrollIntoView({behavior:'smooth',block:'center'});seekVideo(idx)},300)}
-    if(btn.dataset.act==='vidplay')seekVideo(idx);
-    if(btn.dataset.act==='vidback'){adjustTime(idx,-5);updateCards()}
-    if(btn.dataset.act==='vidfwd'){adjustTime(idx,5);updateCards()}
-    if(btn.dataset.act==='learn'){if(S.learned.has(phonemes[idx].s))S.learned.delete(phonemes[idx].s);else S.learned.add(phonemes[idx].s);save();updateStats();updateCards()}
-    if(btn.dataset.act==='listen'){speak(phonemes[idx].sentence);setTimeout(()=>speak(phonemes[idx].eg[0]),2500)}
-    if(btn.dataset.act==='record')toggleRecord(idx);
-    if(btn.dataset.act==='playmy')playMy();
-    if(btn.dataset.act==='compare')compareRec(idx);
-    if(btn.dataset.act==='check')checkPron(idx);
-  }
-  if(btn.dataset.choice)answerQuiz(btn.dataset.choice);
-  if(btn.id==='btnQuiz'){const p=$('quizPanel');const o=!p.classList.contains('open');p.classList.toggle('open',o);if(o)makeQuiz()}
-  if(btn.id==='quizClose')$('quizPanel').classList.remove('open');
-  if(btn.id==='quizNext')makeQuiz();
-  if(btn.id==='quizSpeak'&&S.quizQ)speak(S.quizQ.answer.eg[0]);
-});
-
-$('search').addEventListener('input',e=>{S.search=e.target.value;S.expandedIdx=-1;updateCards()});
-updateStats();updateCards();
-</script>
-</body>
-</html>
+function sv(){localStorage.setItem("phl",JSON.stringify([...S.le]));localStorage.setItem("phm",JSON.stringify(S.mi));localStorage.setItem("phs",String(S.sc))}
+function vi(){const q=S.se.trim().toLowerCase();return PH.filter(p=>(S.fi==="all"||p.g===S.fi)&&(!q||[p.s,p.n,p.er,p.se,...p.eg].join(" ").toLowerCase().includes(q)))}
+function ch(p){const i=PH.indexOf(p),ex=S.ex===i,sg=p.sg;return'<div class="card'+(ex?" expanded":"")+'" data-idx="'+i+'"><span class="tag '+p.t+'">'+p.n+'</span><div class=sym>'+p.s+'</div><div class=eg>'+p.eg.join(" · ")+'</div><div class=tip>'+p.er.substring(0,38)+'…</div><div class=acts><button data-a=ex data-i='+i+'>'+(ex?"收起":"🎤 练习")+'</button><button data-a=le data-i='+i+'>'+(S.le.has(p.s)?"✓已掌握":"标记")+"</button></div>"+(ex?'<div class=detail><div class=big-sym>'+p.s+'</div><div class=sentence>'+p.se+'<small>例词: '+p.eg.join(" · ")+'</small></div><video src="'+p.src+'" controls playsinline preload=none></video><div class=pr-row><button class=btn-rec data-a=rc data-i='+i+'>🎙 录音对比</button><button class=btn-play data-a=pm data-i='+i+' disabled>▶ 回听</button><button class=btn-cmp data-a=cp data-i='+i+' disabled>🔄 对比</button></div><div class=pr-row><button data-a=ck data-i='+i+' style=background:var(--a3);color:#fff;border:0;min-height:34px;padding:4px 12px;border-radius:var(--r);cursor:pointer;font-size:12px>🎯 语音识别校验</button></div><div class=rc-st data-i='+i+'></div><div class=fb data-i='+i+'></div><div class=info-box><h4>📐 发音要点</h4><p>'+p.ar+'</p></div><div class="info-box warn"><h4>⚠️ 常见错误</h4><p>'+p.er+"</p></div></div>":"")+"</div>"}
+function uc(){$("cd").innerHTML=vi().map(ch).join("")||'<div class=empty>没有匹配的音标</div>'}
+function us(){$("ln").textContent=S.le.size;$("sn").textContent=S.sc;$("mn").textContent=S.mi.length}
+async function tr(i){if(S.mr&&S.mr.state==="recording"){S.mr.stop();return}S.ch=[];S.au=null;try{const st=await navigator.mediaDevices.getUserMedia({audio:!0});S.mr=new MediaRecorder(st,{mimeType:"audio/webm"});S.mr.ondataavailable=e=>{if(e.data.size>0)S.ch.push(e.data)};S.mr.onstop=()=>{st.getTracks().forEach(t=>t.stop());const b=new Blob(S.ch,{type:"audio/webm"});S.au=URL.createObjectURL(b);$("ma").src=S.au;ub(i,!0);ur(i,"✅ 录音完成！")};S.mr.start();ur(i,"🔴 正在录音…");ub(i,null,!0)}catch(e){ur(i,"❌ 无法访问麦克风")}}
+function ur(i,t){const el=document.querySelector('.rc-st[data-i="'+i+'"]');if(el)el.textContent=t||""}
+function ub(i,hr,ir){const c=document.querySelector('.card[data-idx="'+i+'"]');if(!c)return;const pb=c.querySelector('[data-a=pm]'),cb=c.querySelector('[data-a=cp]'),rb=c.querySelector('[data-a=rc]');if(pb)pb.disabled=!hr;if(cb)cb.disabled=!hr;if(rb&&ir!==undefined){rb.textContent=ir?"⏹ 停止":"🎙 录音对比";rb.classList.toggle("recording",ir)}}
+function pm(){if(S.au){$("ma").src=S.au;$("ma").play()}}
+function cm(i){if(!S.au)return;const p=PH[i],fb=document.querySelector('.fb[data-i="'+i+'"]');fb.className="fb";fb.style.display="block";fb.textContent="🔊 视频原声…";fb.innerHTML="👂 先听视频里的主持人发音，再对比你的录音。<br>⚠️ <b>"+p.er+"</b>";setTimeout(()=>{fb.textContent="🎤 你的录音…";$("ma").src=S.au;$("ma").play()},2000)}
+function ck(i){const p=PH[i],fb=document.querySelector('.fb[data-i="'+i+'"]');if(!("webkitSpeechRecognition"in window)&&!("SpeechRecognition"in window)){fb.className="fb retry";fb.textContent="⚠️ 你的浏览器不支持语音识别";return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=new SR();rec.lang="en-US";rec.maxAlternatives=3;fb.className="fb";fb.style.display="block";fb.textContent="🎯 说出: "+p.eg[0]+"…";rec.start();rec.onresult=e=>{const rs=[...Array(e.results[0].length)].map((_,j)=>e.results[0][j].transcript.toLowerCase().trim());const mt=rs.some(r=>r.includes(p.eg[0].toLowerCase()));if(mt){fb.className="fb good";fb.innerHTML="✅ 识别成功！<b>"+p.eg[0]+"</b> 发音可辨识";S.le.add(p.s);sv();us()}else{fb.className="fb retry";fb.innerHTML="⚠️ 识别为: <b>"+rs[0]+"</b>，目标: <b>"+p.eg[0]+"</b><br>"+p.er}};rec.onerror=()=>{fb.className="fb retry";fb.textContent="⚠️ 识别失败，请重试"}}
+function mq(){const a=PH[Math.floor(Math.random()*PH.length)],w=PH.filter(p=>p.s!==a.s).sort(()=>Math.random()-.5).slice(0,3);S.qq={an:a,ch:[a,...w].sort(()=>Math.random()-.5)};S.qd=!1;$("qs").textContent=S.qq.an.s;$("qr").innerHTML=S.qq.ch.map(p=>'<button data-c="'+p.s+'"><b>'+p.eg[0]+"</b><br><small>"+p.eg.slice(1).join("·")+"</small></button>").join("");$("qf").textContent=""}
+function aq(sy){if(S.qd||!S.qq)return;S.qd=!0;const r=sy===S.qq.an.s;document.querySelectorAll("#qr button").forEach(b=>{if(b.dataset.c===S.qq.an.s)b.classList.add("correct");if(b.dataset.c===sy&&!r)b.classList.add("wrong")});if(r){S.sc++;S.le.add(S.qq.an.s);$("qf").innerHTML='<span style=color:var(--gd)>✅ 答对了！</span>'}else{S.mi.unshift({symbol:S.qq.an.s,at:new Date().toISOString()});S.mi=S.mi.slice(0,60);$("qf").innerHTML='<span style=color:var(--bd)>❌ '+S.qq.an.s+" → "+S.qq.an.eg[0]+"</span>"}sv();us()}
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const i=b.dataset.i!==undefined?+b.dataset.i:null;if(b.dataset.f!==undefined){S.fi=b.dataset.f;document.querySelectorAll(".filters button").forEach(x=>x.classList.toggle("active",x.dataset.f===S.fi));S.ex=-1;uc();return}if(i!=null){if(b.dataset.a==="ex"){S.ex=S.ex===i?-1:i;uc()}if(b.dataset.a==="le"){if(S.le.has(PH[i].s))S.le.delete(PH[i].s);else S.le.add(PH[i].s);sv();us();uc()}if(b.dataset.a==="rc")tr(i);if(b.dataset.a==="pm")pm();if(b.dataset.a==="cp")cm(i);if(b.dataset.a==="ck")ck(i)}if(b.dataset.c)aq(b.dataset.c);if(b.id==="bq"){const p=$("qp");const o=!p.classList.contains("open");p.classList.toggle("open",o);if(o)mq()}if(b.id==="qc")$("qp").classList.remove("open");if(b.id==="qn")mq()});
+$("s").addEventListener("input",e=>{S.se=e.target.value;S.ex=-1;uc()});us();uc();
+</script></body></html>
