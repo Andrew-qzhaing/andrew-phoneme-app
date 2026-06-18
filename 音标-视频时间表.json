@@ -1,0 +1,290 @@
+[
+  {
+    "symbol": "/i:/",
+    "start": 79,
+    "end": 109,
+    "duration": 30
+  },
+  {
+    "symbol": "/ɪ/",
+    "start": 118,
+    "end": 148,
+    "duration": 30
+  },
+  {
+    "symbol": "/e/",
+    "start": 148,
+    "end": 178,
+    "duration": 30
+  },
+  {
+    "symbol": "/æ/",
+    "start": 178,
+    "end": 207,
+    "duration": 29
+  },
+  {
+    "symbol": "/ɑ:/",
+    "start": 207,
+    "end": 237,
+    "duration": 30
+  },
+  {
+    "symbol": "/ɒ/",
+    "start": 237,
+    "end": 267,
+    "duration": 30
+  },
+  {
+    "symbol": "/ɔ:/",
+    "start": 267,
+    "end": 297,
+    "duration": 30
+  },
+  {
+    "symbol": "/ʊ/",
+    "start": 306,
+    "end": 336,
+    "duration": 30
+  },
+  {
+    "symbol": "/u:/",
+    "start": 336,
+    "end": 366,
+    "duration": 30
+  },
+  {
+    "symbol": "/ʌ/",
+    "start": 366,
+    "end": 396,
+    "duration": 30
+  },
+  {
+    "symbol": "/ɜ:/",
+    "start": 396,
+    "end": 426,
+    "duration": 30
+  },
+  {
+    "symbol": "/ə/",
+    "start": 426,
+    "end": 456,
+    "duration": 30
+  },
+  {
+    "symbol": "/eɪ/",
+    "start": 456,
+    "end": 486,
+    "duration": 30
+  },
+  {
+    "symbol": "/aɪ/",
+    "start": 486,
+    "end": 516,
+    "duration": 30
+  },
+  {
+    "symbol": "/ɔɪ/",
+    "start": 516,
+    "end": 546,
+    "duration": 30
+  },
+  {
+    "symbol": "/əʊ/",
+    "start": 546,
+    "end": 576,
+    "duration": 30
+  },
+  {
+    "symbol": "/aʊ/",
+    "start": 576,
+    "end": 606,
+    "duration": 30
+  },
+  {
+    "symbol": "/ɪə/",
+    "start": 606,
+    "end": 636,
+    "duration": 30
+  },
+  {
+    "symbol": "/eə/",
+    "start": 636,
+    "end": 666,
+    "duration": 30
+  },
+  {
+    "symbol": "/ʊə/",
+    "start": 666,
+    "end": 696,
+    "duration": 30
+  },
+  {
+    "symbol": "/p/",
+    "start": 696,
+    "end": 726,
+    "duration": 30
+  },
+  {
+    "symbol": "/b/",
+    "start": 726,
+    "end": 756,
+    "duration": 30
+  },
+  {
+    "symbol": "/t/",
+    "start": 756,
+    "end": 786,
+    "duration": 30
+  },
+  {
+    "symbol": "/d/",
+    "start": 786,
+    "end": 816,
+    "duration": 30
+  },
+  {
+    "symbol": "/k/",
+    "start": 816,
+    "end": 846,
+    "duration": 30
+  },
+  {
+    "symbol": "/ɡ/",
+    "start": 846,
+    "end": 876,
+    "duration": 30
+  },
+  {
+    "symbol": "/f/",
+    "start": 880,
+    "end": 910,
+    "duration": 30
+  },
+  {
+    "symbol": "/v/",
+    "start": 910,
+    "end": 940,
+    "duration": 30
+  },
+  {
+    "symbol": "/θ/",
+    "start": 940,
+    "end": 970,
+    "duration": 30
+  },
+  {
+    "symbol": "/ð/",
+    "start": 970,
+    "end": 1000,
+    "duration": 30
+  },
+  {
+    "symbol": "/s/",
+    "start": 1000,
+    "end": 1030,
+    "duration": 30
+  },
+  {
+    "symbol": "/z/",
+    "start": 1030,
+    "end": 1060,
+    "duration": 30
+  },
+  {
+    "symbol": "/ʃ/",
+    "start": 1060,
+    "end": 1090,
+    "duration": 30
+  },
+  {
+    "symbol": "/ʒ/",
+    "start": 1090,
+    "end": 1120,
+    "duration": 30
+  },
+  {
+    "symbol": "/r/",
+    "start": 1120,
+    "end": 1150,
+    "duration": 30
+  },
+  {
+    "symbol": "/h/",
+    "start": 1150,
+    "end": 1180,
+    "duration": 30
+  },
+  {
+    "symbol": "/tʃ/",
+    "start": 1180,
+    "end": 1210,
+    "duration": 30
+  },
+  {
+    "symbol": "/dʒ/",
+    "start": 1210,
+    "end": 1240,
+    "duration": 30
+  },
+  {
+    "symbol": "/tr/",
+    "start": 1240,
+    "end": 1270,
+    "duration": 30
+  },
+  {
+    "symbol": "/dr/",
+    "start": 1270,
+    "end": 1300,
+    "duration": 30
+  },
+  {
+    "symbol": "/ts/",
+    "start": 1300,
+    "end": 1330,
+    "duration": 30
+  },
+  {
+    "symbol": "/dz/",
+    "start": 1330,
+    "end": 1360,
+    "duration": 30
+  },
+  {
+    "symbol": "/m/",
+    "start": 1360,
+    "end": 1390,
+    "duration": 30
+  },
+  {
+    "symbol": "/n/",
+    "start": 1390,
+    "end": 1420,
+    "duration": 30
+  },
+  {
+    "symbol": "/ŋ/",
+    "start": 1420,
+    "end": 1450,
+    "duration": 30
+  },
+  {
+    "symbol": "/l/",
+    "start": 1450,
+    "end": 1480,
+    "duration": 30
+  },
+  {
+    "symbol": "/j/",
+    "start": 1480,
+    "end": 1510,
+    "duration": 30
+  },
+  {
+    "symbol": "/w/",
+    "start": 1510,
+    "end": 1540,
+    "duration": 30
+  }
+]
